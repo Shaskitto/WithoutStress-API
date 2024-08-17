@@ -5,6 +5,21 @@ const userSchema = require('../models/user');
 const router = express.Router();
 
 
+//obtener usuarios
+router.get('/users', async (req, res) => {
+    try {
+        const users = await userSchema.find();
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron usuarios.' });
+        }
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los usuarios.', error: error.message });
+    }
+})
+
 // Crear usuario
 router.post('/users/register', async (req, res) => {
     try {
