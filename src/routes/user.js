@@ -83,7 +83,7 @@ router.post('/users/login', async (req, res) => {
         user.refreshToken = refreshToken;
         await user.save();
  
-        res.json({ accessToken: accessToken, refreshToken: refreshToken, message: 'Inicio de sesión exitoso' });
+        res.json({ accessToken: accessToken, refreshToken: refreshToken, email: user.email, message: 'Inicio de sesión exitoso' });
     } catch (error) {
         res.status(500).json({ message: 'Error del servidor', error });
     }
