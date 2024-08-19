@@ -5,7 +5,7 @@ const userSchema = require('../models/user');
 const router = express.Router();
 
 
-//obtener usuarios
+// Obtener usuarios
 router.get('/users', async (req, res) => {
     try {
         const users = await userSchema.find();
@@ -19,6 +19,22 @@ router.get('/users', async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los usuarios.', error: error.message });
     }
 })
+
+// Obtener usuario por correo
+router.get('/users/email/:email', async (req, res) => {
+    try {
+        const email = req.params.email;  
+        const user = await userSchema.findOne({ email: email });
+        
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+        
+        res.status(200).json(user); 
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el usuario.', error: error.message });
+    }
+});
 
 // Crear usuario
 router.post('/users/register', async (req, res) => {
