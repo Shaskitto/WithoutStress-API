@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 
 const verifyToken = async (req, res, next) => {
-    const token = req.headers["x-access-token"];
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if(!token){
         return res.status(403).json({ message: 'No se proporcionó un token.' });
