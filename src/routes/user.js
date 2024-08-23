@@ -96,7 +96,7 @@ router.post('/users/login', async (req, res) => {
         const token = jwt.sign({ userId: user._id, email: user.email }, process.env.SECRET ,{ expiresIn: '1d' });
         await user.save();
  
-        res.json({ token: token, message: 'Inicio de sesión exitoso' });
+        res.json({ token: token, userId: user._id, message: 'Inicio de sesión exitoso' });
     } catch (error) {
         res.status(500).json({ message: 'Error del servidor', error });
     }
