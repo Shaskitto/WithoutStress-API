@@ -1,7 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const userSchema = require('../models/user');
+const userSchema = require('../models/userModel');
+const verifyToken = require('../middlewares/authJwt')
 const router = express.Router();
 
 
@@ -20,11 +21,11 @@ router.get('/users', async (req, res) => {
     }
 })
 
-// Obtener usuario por correo
-router.get('/users/email/:email', async (req, res) => {
+// Obtener usuario por id
+router.get('/users/:id', verifyToken, async (req, res) => {
     try {
-        const email = req.params.email;  
-        const user = await userSchema.findOne({ email: email });
+        const { id } = req.params;  
+        const user = await userSchema.findById(id);
         
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
@@ -38,19 +39,33 @@ router.get('/users/email/:email', async (req, res) => {
 
 // Crear usuario
 router.post('/users/register', async (req, res) => {
+    const { username, email, password } = req.body;
+    
     try {
-        const { username, email, password } = req.body;
+        const lowerCaseEmail = email.toLowerCase();
+        const lowerCaseUsername = username.toLowerCase();
 
         if (!username || !email || !password) {
             return res.status(400).json({ message: 'Por favor, completa todos los campos requeridos.' });
         }
 
-        const existingUser = await userSchema.findOne({ email });
+        const existingUser = await userSchema.findOne({
+            $or: [
+                { email: lowerCaseEmail },
+                { username: lowerCaseUsername }
+            ]
+        });
+
         if (existingUser) {
-            return res.status(400).json({ message: 'Este correo electrónico ya está registrado.' });
+            if (existingUser.email === lowerCaseEmail) {
+                return res.status(400).json({ message: 'Este correo electrónico ya está registrado.' });
+            }
+            if (existingUser.username === lowerCaseUsername) {
+                return res.status(400).json({ message: 'Este nombre de usuario ya está registrado.' });
+            }
         }
 
-        const user = new userSchema({ username, email, password });
+        const user = new userSchema({ email: lowerCaseEmail, username: lowerCaseUsername, password });
         const savedUser = await user.save();
 
         res.status(201).json({
@@ -78,36 +93,13 @@ router.post('/users/login', async (req, res) => {
         return res.status(400).json({ message: 'Contraseña incorrecta' });
         }
  
-        const accessToken = jwt.sign({ userId: user._id, email: user.email },'secreto_del_token',{ expiresIn: '1h' });
-        const refreshToken = jwt.sign({ userId: user._id, email: user.email }, 'refresh_token_secret', { expiresIn: '7d' });
-        user.refreshToken = refreshToken;
+        const token = jwt.sign({ userId: user._id, email: user.email }, process.env.SECRET ,{ expiresIn: '1d' });
         await user.save();
  
-        res.json({ accessToken: accessToken, refreshToken: refreshToken, email: user.email, message: 'Inicio de sesión exitoso' });
+        res.json({ token: token, message: 'Inicio de sesión exitoso' });
     } catch (error) {
         res.status(500).json({ message: 'Error del servidor', error });
     }
 })
-
-// refresh token
-router.post('/users/refresh-token', async (req, res) => {
-    const { refreshToken } = req.body;
-    if (!refreshToken) return res.status(401).json({ message: 'Token no proporcionado' });
-
-    try {
-        const decoded = jwt.verify(refreshToken, 'refresh_token_secret');
-        const user = await userSchema.findById(decoded.userId);
-
-        if (!user || user.refreshToken !== refreshToken) {
-            return res.status(403).json({ message: 'Token inválido' });
-        }
-
-        const newAccessToken = jwt.sign({ userId: user._id, email: user.email }, 'access_token_secret', { expiresIn: '1h' });
-        res.json({ accessToken: newAccessToken });
-    } catch (error) {
-        res.status(403).json({ message: 'Token no válido' });
-    }
-});
-
 
 module.exports = router;
