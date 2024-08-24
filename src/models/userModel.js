@@ -31,7 +31,7 @@ const userSchema = mongoose.Schema({
     },
     sexo: {
         type: String,
-        enum: ['Hombre', 'Mujer'], 
+        enum: ['Masculino', 'Femenino'], 
     },
     semestre: {
         type: Number,
