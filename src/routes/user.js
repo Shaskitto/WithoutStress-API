@@ -5,38 +5,6 @@ const userSchema = require('../models/userModel');
 const verifyToken = require('../middlewares/authJwt')
 const router = express.Router();
 
-
-// Obtener usuarios
-router.get('/users', async (req, res) => {
-    try {
-        const users = await userSchema.find();
-
-        if (!users || users.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron usuarios.' });
-        }
-
-        res.status(200).json(users);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al obtener los usuarios.', error: error.message });
-    }
-})
-
-// Obtener usuario por id
-router.get('/users/:id', verifyToken, async (req, res) => {
-    try {
-        const { id } = req.params;  
-        const user = await userSchema.findById(id);
-        
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado.' });
-        }
-        
-        res.status(200).json(user); 
-    } catch (error) {
-        res.status(500).json({ message: 'Error al obtener el usuario.', error: error.message });
-    }
-});
-
 // Crear usuario
 router.post('/users/register', async (req, res) => {
     const { username, email, password } = req.body;
@@ -77,6 +45,57 @@ router.post('/users/register', async (req, res) => {
         res.status(500).json({ message: 'Error al registrar el usuario.', error: error.message });
     }
 })
+
+// Obtener usuarios
+router.get('/users', async (req, res) => {
+    try {
+        const users = await userSchema.find();
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron usuarios.' });
+        }
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los usuarios.', error: error.message });
+    }
+})
+
+// Obtener usuario por id
+router.get('/users/:id', verifyToken, async (req, res) => {
+    const { id } = req.params;  
+    
+    try {
+        const user = await userSchema.findById(id);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+        
+        res.status(200).json(user); 
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el usuario.', error: error.message });
+    }
+});
+
+// Actualizar información del usuario 
+router.patch('/users/:id', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    try {
+        const updatedUser = await userSchema.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el usuario.', error: error.message });
+    }
+});
+
 
 // Iniciar sesion
 router.post('/users/login', async (req, res) => {

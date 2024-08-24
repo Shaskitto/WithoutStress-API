@@ -20,6 +20,31 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         minlength: 8, 
+    },
+    profileImage: {
+        type: String,
+        default: 'https://i.pinimg.com/736x/25/ee/de/25eedef494e9b4ce02b14990c9b5db2d.jpg', 
+    },
+    edad: {
+        type: Number,
+        min: 0,
+    },
+    sexo: {
+        type: String,
+        enum: ['Hombre', 'Mujer'], 
+    },
+    semestre: {
+        type: Number,
+        min: 1,
+        max: 4,
+    },
+    carrera: {
+        type: String,
+        enum: ['Ingeniería de Sistemas', 'Ingeniería Multimedia'], 
+    },
+    actividades: {
+        type: [String],
+        enum: ['Meditación', 'Sonidos Relajantes', 'Ejercicios para dormir', 'Prácticas para Dormir'], 
     }
 });
 
