@@ -44,7 +44,7 @@ const userSchema = mongoose.Schema({
     },
     actividades: {
         type: [String],
-        enum: ['Meditación', 'Sonidos Relajantes', 'Ejercicios para dormir', 'Prácticas para Dormir'], 
+        enum: ['Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir'], 
     }
 });
 
