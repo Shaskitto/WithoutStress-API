@@ -123,7 +123,7 @@ router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (re
 
     try {
         if (req.file) {
-            const imageUrl = `${process.env.API_URL}/api/users/${id}/profile-image`; 
+            const imageUrl = `${req.file.filename}`; 
             updateData.profileImage = imageUrl; 
         }
 
