@@ -1,26 +1,10 @@
 const express = require('express');
-const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 const verifyToken = require('../middlewares/authJwt')
 
 const router = express.Router();
-
-// Configuración de Multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); 
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname); 
-    }
-});
-
-const upload = multer({ 
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 } 
-});
 
 // Crear usuario
 router.post('/users/register', async (req, res) => {
@@ -96,13 +80,9 @@ router.get('/users/:id', verifyToken, async (req, res) => {
 });
 
 // Actualizar información del usuario 
-router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (req, res) => {
+router.patch('/users/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
-
-    if (req.file) {
-        updateData.profileImage = req.file.path; 
-    }
 
     try {
         const updatedUser = await userSchema.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
