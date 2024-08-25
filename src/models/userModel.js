@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
     },
     profileImage: {
         type: String,
-        default: 'https://i.pinimg.com/736x/25/ee/de/25eedef494e9b4ce02b14990c9b5db2d.jpg', 
+        default: 'a4dca901ab52c4a6818e250dc6bc7e14.jfif', 
     },
     edad: {
         type: Number,

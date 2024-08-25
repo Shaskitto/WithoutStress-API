@@ -10,6 +10,18 @@ const { upload, gfs } = require('../db');
 require('dotenv').config();
 const router = express.Router();
 
+// cargar imagen por defecto de usuario
+router.post('/upload', upload.single('profileImage'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'No se ha proporcionado ninguna imagen.' });
+    }
+
+    res.status(200).json({
+        message: 'Imagen cargada con éxito.',
+    });
+})
+
+// Obtener imagen de perfil de un usuario
 router.get('/users/:id/profile-image', async (req, res) => {
     const { id } = req.params;
 
