@@ -10,7 +10,7 @@ const { upload, gfs } = require('../db');
 require('dotenv').config();
 const router = express.Router();
 
-router.get('/users/:id/profile-image', verifyToken, async (req, res) => {
+router.get('/users/:id/profile-image', async (req, res) => {
     const { id } = req.params;
 
     try {
