@@ -9,23 +9,16 @@ const { upload } = require('../db');
 
 const router = express.Router();
 
-router.post('/upload', upload.single('file'), async (req, res) =>{
-    try {
-        // El archivo subido se almacena en req.file
-        if (!req.file) {
-            return res.status(400).send('No file uploaded');
+// Obtener imagenes
+router.get('/uploads/:filename', (req, res) => {
+    gfs.find({ filename: req.params.filename }).toArray((err, files) => {
+        if (!files || files.length === 0) {
+            return res.status(404).json({ message: 'No se encontró la imagen.' });
         }
-        
-        // Aquí puedes manejar cualquier información adicional o lógica de negocio
-        res.status(200).send({
-            file: req.file,
-            message: 'File uploaded successfully'
-        });
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        res.status(500).send('Server error');
-    }
-})
+        const readstream = gfs.openDownloadStream(files[0]._id);
+        readstream.pipe(res);
+    });
+});
 
 // Crear usuario
 router.post('/users/register', async (req, res) => {
@@ -97,7 +90,7 @@ router.get('/users/:id', verifyToken, async (req, res) => {
         const profileImageUrl = user.profileImage ? `${process.env.API_URL}/uploads/${user.profileImage.split('/').pop()}`: null;
         
         res.status(200).json({...user.toObject(), profileImage: profileImageUrl}); 
-        
+
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el usuario.', error: error.message });
     }
