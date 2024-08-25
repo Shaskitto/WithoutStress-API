@@ -13,6 +13,7 @@ const port = process.env.PORT || 10000;
 app.use(cors());
 app.use(express.json());
 app.use('/api', userRoutes);
+app.use('/uploads', express.static('uploads'));
 
 // Rutas
 app.get('/', (req, res) => {

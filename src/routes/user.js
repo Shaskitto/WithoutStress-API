@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 const verifyToken = require('../middlewares/authJwt')
+require('dotenv').config();
 const multer = require('multer');
 const { upload } = require('../db');
 
@@ -106,7 +107,8 @@ router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (re
 
     try {
         if (req.file) {
-            updateData.profileImage = req.file.filename; 
+            const imageUrl = `${process.env.API_URL}/uploads/${req.file.filename}`;
+            updateData.profileImage = imageUrl; 
         }
 
         const updatedUser = await userSchema.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
