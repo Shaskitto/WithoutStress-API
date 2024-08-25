@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
-const { connectDB, initGFS, gfs, upload } = require('./db');
+const { connectDB, initGFS } = require('./db');
 
 require('dotenv').config();
 
@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     res.send("Welcome to my API");
 })
 
-// Conectar a MongoDB y inicializar GridFS
+// Conectar a MongoDB e inicializar GridFS
 connectDB().then(() => {
     initGFS(); 
     console.log('MongoDB connected and GridFS initialized');

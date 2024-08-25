@@ -4,13 +4,12 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const userSchema = require('../models/userModel');
 const verifyToken = require('../middlewares/authJwt')
-const multer = require('multer');
-const { upload, gfs } = require('../db');
+const { upload } = require('../db');
 
 require('dotenv').config();
 const router = express.Router();
 
-// cargar imagen por defecto de usuario
+// cargar imagen por defecto al usuario
 router.post('/upload', upload.single('profileImage'), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'No se ha proporcionado ninguna imagen.' });
@@ -22,7 +21,7 @@ router.post('/upload', upload.single('profileImage'), async (req, res) => {
 })
 
 // Obtener imagen de perfil de un usuario
-router.get('/users/:id/profile-image', async (req, res) => {
+router.get('/user/:id/profile-image', async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -53,7 +52,7 @@ router.get('/users/:id/profile-image', async (req, res) => {
 });
 
 // Crear usuario
-router.post('/users/register', async (req, res) => {
+router.post('/user/register', async (req, res) => {
     const { username, email, password } = req.body;
     
     try {
@@ -109,7 +108,7 @@ router.get('/users', async (req, res) => {
 })
 
 // Obtener usuario por id
-router.get('/users/:id', verifyToken, async (req, res) => {
+router.get('/user/:id', verifyToken, async (req, res) => {
     const { id } = req.params;  
     
     try {
@@ -129,11 +128,20 @@ router.get('/users/:id', verifyToken, async (req, res) => {
 });
 
 // Actualizar información del usuario 
-router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (req, res) => {
+router.patch('/user/:id', verifyToken, upload.single('profileImage'), async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
     try {
+        if (updateData.username) {
+            const lowerCaseUsername = updateData.username.toLowerCase();
+            const usernameExists = await userSchema.findOne({ username: lowerCaseUsername });
+            if (usernameExists && usernameExists._id.toString() !== id) {
+                return res.status(400).json({ message: 'El nombre de usuario ya está en uso.' });
+            }
+            updateData.username = lowerCaseUsername;
+        }
+
         if (req.file) {
             const imageUrl = `${req.file.filename}`; 
             updateData.profileImage = imageUrl; 
@@ -153,7 +161,7 @@ router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (re
 
 
 // Iniciar sesion
-router.post('/users/login', async (req, res) => {
+router.post('/user/login', async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await userSchema.findOne({ email });
