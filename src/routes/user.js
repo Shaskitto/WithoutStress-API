@@ -87,7 +87,7 @@ router.get('/users/:id', verifyToken, async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        const profileImageUrl = user.profileImage ? `${process.env.API_URL}/uploads/${user.profileImage.split('/').pop()}`: null;
+        const profileImageUrl = user.profileImage ? `${process.env.API_URL}/api/uploads/${user.profileImage.split('/').pop()}`: null;
         
         res.status(200).json({...user.toObject(), profileImage: profileImageUrl}); 
 
