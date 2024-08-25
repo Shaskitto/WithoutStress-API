@@ -93,7 +93,7 @@ router.get('/users/:id', verifyToken, async (req, res) => {
 });
 
 // Actualizar información del usuario 
-router.patch('/users/:id', upload.single('profileImage'), async (req, res) => {
+router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
 
