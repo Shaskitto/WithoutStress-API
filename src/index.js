@@ -1,10 +1,9 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
 const userRoutes = require('./routes/user');
-const { conn, gfs, upload } = require('./db');
+const { connectDB, initGFS, gfs, upload } = require('./db');
 
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 10000;
@@ -13,21 +12,20 @@ const port = process.env.PORT || 10000;
 app.use(cors());
 app.use(express.json());
 app.use('/api', userRoutes);
-app.use('/uploads', express.static('uploads'));
+app.use('/api/uploads', express.static('uploads'));
 
 // Rutas
 app.get('/', (req, res) => {
     res.send("Welcome to my API");
 })
 
-// MongoDB conexión
-mongoose.connect(process.env.MONGODB_URI, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-}).then(() => {
-    console.log('Connected to MongoDB Atlas');
-}).catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
+// Conectar a MongoDB y inicializar GridFS
+connectDB().then(() => {
+    initGFS(); 
+    console.log('MongoDB connected and GridFS initialized');
+}).catch(err => {
+    console.error('Failed to connect to MongoDB:', err);
 });
 
+// Iniciar el servidor
 app.listen(port, () => console.log('server listening on port', port));

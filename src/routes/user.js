@@ -1,23 +1,43 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const userSchema = require('../models/userModel');
 const verifyToken = require('../middlewares/authJwt')
-require('dotenv').config();
 const multer = require('multer');
-const { upload } = require('../db');
+const { upload, gfs } = require('../db');
 
+require('dotenv').config();
 const router = express.Router();
 
-// Obtener imagenes
-router.get('/uploads/:filename', (req, res) => {
-    gfs.find({ filename: req.params.filename }).toArray((err, files) => {
-        if (!files || files.length === 0) {
-            return res.status(404).json({ message: 'No se encontró la imagen.' });
+router.get('/users/:id/profile-image', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await userSchema.findById(id);
+
+        if (!user || !user.profileImage) {
+            return res.status(404).json({ message: 'User or image not found' });
         }
-        const readstream = gfs.openDownloadStream(files[0]._id);
-        readstream.pipe(res);
-    });
+
+        const filename = user.profileImage; 
+
+        const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+            bucketName: 'uploads'
+        });
+
+        const downloadStream = bucket.openDownloadStreamByName(filename);
+
+        downloadStream.on('error', (err) => {
+            return res.status(404).json({ message: 'File not found' });
+        });
+        
+        res.set('Content-Type', 'image/jpeg');
+        downloadStream.pipe(res);
+    } catch (error) {
+        console.error('Error fetching profile image:', error);
+        res.status(500).json({ message: 'Error fetching image' });
+    }
 });
 
 // Crear usuario
@@ -86,10 +106,10 @@ router.get('/users/:id', verifyToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
-
-        const profileImageUrl = user.profileImage ? `${process.env.API_URL}/api/uploads/${user.profileImage.split('/').pop()}`: null;
         
-        res.status(200).json({...user.toObject(), profileImage: profileImageUrl}); 
+        const imageUrl = `${process.env.API_URL}/api/users/${id}/profile-image`;
+
+        res.status(200).json({...user._doc, profileImage: imageUrl}); 
 
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el usuario.', error: error.message });

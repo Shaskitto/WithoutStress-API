@@ -9,20 +9,36 @@ require('dotenv').config();
 // Connection URI
 const mongoURI = process.env.MONGODB_URI;
 
-// connection
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-// init gfs
+// Init gfs
 let gfs;
-conn.once("open", () => {
-  // init stream
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "uploads"
+
+const initGFS = () => {
+  const conn = mongoose.connection;
+  conn.once("open", () => {
+    try {
+      gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+          bucketName: "uploads"
+      });
+      console.log('GridFS initialized');
+  } catch (error) {
+      console.error('Error initializing GridFS:', error);
+  }
   });
-});
+};
+
+// MongoDB conexión
+const connectDB = async () => {
+  try {
+      await mongoose.connect(mongoURI, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+      });
+      console.log('Connected to MongoDB Atlas');
+  } catch (error) {
+      console.error('Error connecting to MongoDB:', error);
+      process.exit(1); 
+  }
+};
 
 // Storage
 const storage = new GridFsStorage({
@@ -46,4 +62,4 @@ const storage = new GridFsStorage({
   
 const upload = multer({ storage });
 
-module.exports = { conn, gfs, upload };
+module.exports = { connectDB, gfs, upload, initGFS };
