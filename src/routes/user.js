@@ -3,21 +3,28 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 const verifyToken = require('../middlewares/authJwt')
-const multer = require('multer')
+const multer = require('multer');
+const { upload } = require('../db');
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads')
-    },
-    filename: (req, file, cb) => {
-        const ext = file.originalname.split('.').pop()
-        cb(null, `${Date.now()}.${ext}`);
+router.post('/upload', upload.single('file'), async (req, res) =>{
+    try {
+        // El archivo subido se almacena en req.file
+        if (!req.file) {
+            return res.status(400).send('No file uploaded');
+        }
+        
+        // Aquí puedes manejar cualquier información adicional o lógica de negocio
+        res.status(200).send({
+            file: req.file,
+            message: 'File uploaded successfully'
+        });
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        res.status(500).send('Server error');
     }
 })
-
-const upload = multer({ storage })
 
 // Crear usuario
 router.post('/users/register', async (req, res) => {
@@ -99,7 +106,7 @@ router.patch('/users/:id', verifyToken, upload.single('profileImage'), async (re
 
     try {
         if (req.file) {
-            updateData.profileImage = `uploads/${req.file.filename}`;
+            updateData.profileImage = req.file.filename; 
         }
 
         const updatedUser = await userSchema.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
