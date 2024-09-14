@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const hashPassword = require('../middlewares/hashPassword');
+const bcrypt = require('bcryptjs');
 
 const userSchema = mongoose.Schema({
     username: {
@@ -98,10 +98,27 @@ const userSchema = mongoose.Schema({
                 }
             ]
         }
-    }
+    },
+    resetPasswordOTP: {
+        type: String,
+        default: null
+    },
+    otpExpiration: {
+        type: Date,
+        default: null
+    }    
 });
 
 // Middleware para encriptar la contraseña antes de guardar el usuario
-userSchema.pre('save', hashPassword);
+userSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 module.exports = mongoose.model('User', userSchema);
