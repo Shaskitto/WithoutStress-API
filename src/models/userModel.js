@@ -47,7 +47,7 @@ const userSchema = mongoose.Schema({
         enum: ['Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir'], 
     },
     horario: {
-        mañana: {
+        manana: {
             type: [String], 
             validate: [
                 {
