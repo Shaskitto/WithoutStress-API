@@ -94,7 +94,6 @@ exports.getProfileImage = async (req, res) => {
         res.set('Content-Type', 'image/jpeg');
         downloadStream.pipe(res);
     } catch (error) {
-        console.error('Error fetching profile image:', error);
         res.status(500).json({ message: 'Error fetching image' });
     }
 };

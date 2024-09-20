@@ -93,7 +93,6 @@ exports.forgotPassword = async (req, res) => {
 
         res.status(200).json({ message: 'Código OTP enviado al correo' });
     } catch (error) {
-        console.error('Error en forgotPassword:', error);
         res.status(500).json({ message: 'Error al procesar la solicitud' });
     }
 };
@@ -124,7 +123,38 @@ exports.resetPassword = async (req, res) => {
 
         res.status(200).json({ message: 'Contraseña restablecida exitosamente' });
     } catch (error) {
-        console.error('Error en resetPassword:', error);
         res.status(500).json({ message: 'Error al procesar la solicitud' });
+    }
+};
+
+// Verificar si el Username existe
+exports.checkUsername = async (req, res) => {
+    try {
+        const { username } = req.query; 
+        const user = await userSchema.findOne({ username }); 
+    
+        if (user) {
+          return res.json({ exists: true }); 
+        } else {
+          return res.json({ exists: false }); 
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error verificando Username' });
+    }
+};
+
+// Verificar si el Email existe
+exports.checkEmail = async (req, res) => {
+    try {
+        const { email } = req.query; 
+        const user = await userSchema.findOne({ email });
+    
+        if (user) {
+          return res.json({ exists: true }); 
+        } else {
+          return res.json({ exists: false }); 
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error verificando Email' });
     }
 };
