@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/auth');
 const { connectDB, initGFS } = require('./config/db');
 
 require('dotenv').config();
@@ -12,6 +13,7 @@ const port = process.env.PORT || 10000;
 app.use(cors());
 app.use(express.json());
 app.use('/api', userRoutes);
+app.use('/api', authRoutes);
 app.use('/api/uploads', express.static('uploads'));
 
 // Rutas
