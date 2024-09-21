@@ -19,7 +19,8 @@ exports.registerUser = async (req, res) => {
             $or: [
                 { email: lowerCaseEmail },
                 { username: lowerCaseUsername }
-            ]
+            ],
+            isDeleted: false
         });
     
         if (existingUser) {
@@ -131,7 +132,7 @@ exports.resetPassword = async (req, res) => {
 exports.checkUsername = async (req, res) => {
     try {
         const { username } = req.query; 
-        const user = await userSchema.findOne({ username }); 
+        const user = await userSchema.findOne({ username: username.toLowerCase() }); 
     
         if (user) {
           return res.json({ exists: true }); 
@@ -147,7 +148,7 @@ exports.checkUsername = async (req, res) => {
 exports.checkEmail = async (req, res) => {
     try {
         const { email } = req.query; 
-        const user = await userSchema.findOne({ email });
+        const user = await userSchema.findOne({ email: email.toLowerCase() });
     
         if (user) {
           return res.json({ exists: true }); 
