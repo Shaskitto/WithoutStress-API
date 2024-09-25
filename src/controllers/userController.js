@@ -119,31 +119,29 @@ exports.sendRequest = async (req, res) => {
     }
 
     try {
-        const existingFriendship = await userSchema.findOne({ 
-            _id: id, 
-            'friends.friendId': friendId 
+        const existingRequest = await userSchema.findOne({
+            _id: id,
+            "friends.friendId": friendId
         });
 
-        if (existingFriendship) {
-            return res.status(400).json({ message: 'Ya son amigos o ya hay una solicitud pendiente.' });
+        if (existingRequest) {
+            console.log('La solicitud ya existe.');
+            return { success: false, message: 'Ya has enviado una solicitud a este amigo.' };
         }
 
         await userSchema.findByIdAndUpdate(id, {
             $addToSet: {
                 friends: { friendId, status: 'pending', sentAt: Date.now() }
             }
-        });
+        }, { new: true });
 
         await userSchema.findByIdAndUpdate(friendId, {
             $addToSet: {
                 friends: { friendId: id, status: 'pending', sentAt: Date.now() }
             }
-        });
+        }, { new: true });
 
-        res.status(200).json({ 
-            message: 'Solicitud de amistad enviada', 
-            data: { friendId, status: 'pending' } 
-        });
+        res.status(200).json({ message: 'Solicitud de amistad enviada correctamente.'});
 
     } catch (error) {
         console.error('Error al enviar la solicitud de amistad:', error);
@@ -214,28 +212,27 @@ exports.deleteRequest = async (req, res) => {
     }
 
     try {
-        console.log('User ID:', id);
-        console.log('Friend ID:', friendId);
+        const userUpdateResult = await userSchema.findByIdAndUpdate(id, {
+            $pull: {
+                friends: { friendId, status: 'pending' }
+            }
+        }, { new: true });
 
-        const userUpdateResult = await userSchema.updateOne(
-            { _id: id },
-            { $pull: { friends: { friendId: friendId } } }
-        );
+        const friendUpdateResult = await userSchema.findByIdAndUpdate(friendId, {
+            $pull: {
+                friends: { friendId: id, status: 'pending' }
+            }
+        }, { new: true });
 
         console.log('User Update Result:', userUpdateResult);
-
-        const friendUpdateResult = await userSchema.updateOne(
-            { _id: friendId },
-            { $pull: { friends: { friendId: id } } }
-        );
-
         console.log('Friend Update Result:', friendUpdateResult);
 
-        if (userUpdateResult.modifiedCount === 0 && friendUpdateResult.modifiedCount === 0) {
-            return res.status(404).json({ message: 'No se encontró la solicitud de amistad para eliminar.' });
+        // Verificar si se eliminó la solicitud de amistad
+        if (userUpdateResult.matchedCount === 0 && friendUpdateResult.matchedCount === 0) {
+            return { success: false, message: 'No se encontró la solicitud de amistad.' };
         }
 
-        res.status(200).json({ message: 'Solicitud de amistad eliminada' });
+        res.status(200).json({ message: 'Solicitud de amistad eliminada correctamente' });
     } catch (error) {
         console.error('Error al eliminar la solicitud de amistad:', error);
         res.status(500).json({ message: 'Error al eliminar la solicitud de amistad' });
