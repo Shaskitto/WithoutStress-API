@@ -212,25 +212,24 @@ exports.deleteRequest = async (req, res) => {
     }
 
     try {
-        const userUpdateResult = await userSchema.findByIdAndUpdate(id, {
-            $pull: {
-                friends: { friendId, status: 'pending' }
-            }
-        }, { new: true });
+        const userId = mongoose.Types.ObjectId(id);
+        const friendUserId = mongoose.Types.ObjectId(friendId);
 
-        const friendUpdateResult = await userSchema.findByIdAndUpdate(friendId, {
+        const userUpdateResult = await userSchema.findByIdAndUpdate(userId, {
             $pull: {
-                friends: { friendId: id, status: 'pending' }
+                friends: { friendId: friendUserId, status: 'pending' }
             }
         }, { new: true });
 
         console.log('User Update Result:', userUpdateResult);
-        console.log('Friend Update Result:', friendUpdateResult);
 
-        // Verificar si se eliminó la solicitud de amistad
-        if (userUpdateResult.matchedCount === 0 && friendUpdateResult.matchedCount === 0) {
-            return { success: false, message: 'No se encontró la solicitud de amistad.' };
-        }
+        const friendUpdateResult = await userSchema.findByIdAndUpdate(friendUserId, {
+            $pull: {
+                friends: { friendId: userId, status: 'pending' }
+            }
+        }, { new: true });
+
+        console.log('Friend Update Result:', friendUpdateResult);
 
         res.status(200).json({ message: 'Solicitud de amistad eliminada correctamente' });
     } catch (error) {
