@@ -14,7 +14,7 @@ router.post('/upload', upload.single('profileImage'), userController.uploadImage
 router.post('/user/friends/request/:id', verifyToken, userController.sendRequest);
 router.get('/user/friends/request/pending/:id', verifyToken, userController.getPendingRequests);
 router.post('/user/friends/request/accept/:id', verifyToken, userController.acceptRequest);
-router.delete('/user/friends/request/delete/:id', verifyToken, userController.deleteRequest);
+router.post('/user/friends/request/decline/:id', verifyToken, userController.declineRequest);
 //router.get('/user/friends/:friendId', verifyToken, userController.getFriendById);
 //router.delete('/user/friends/:friendId', verifyToken, userController.deleteFriend);
 

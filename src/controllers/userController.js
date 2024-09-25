@@ -168,69 +168,78 @@ exports.getPendingRequests = async (req, res) => {
 // Aceptar solicitud de amistad
 exports.acceptRequest = async (req, res) => {
     const { friendId } = req.body; 
-    const { id } = req.params;
+    const { id } = req.params; 
 
     if (!friendId || !id) {
         return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
     }
 
     try {
-        const user = await userSchema.findOne({ 
-            _id: id, 
-            'friends.friendId': friendId,
-            'friends.status': 'pending'
-        });
+        const updatedUser = await userSchema.findOneAndUpdate(
+            { _id: id, "friends.friendId": friendId },
+            { 
+                $set: { 
+                    "friends.$.status": "accepted", 
+                    "friends.$.acceptedAt": Date.now() 
+                } 
+            },
+            { new: true }
+        );
 
-        if (!user) {
-            return res.status(404).json({ message: 'No se encontró una solicitud de amistad pendiente.' });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'No se encontró la solicitud de amistad.' });
         }
 
-        await userSchema.updateOne(
-            { _id: id, 'friends.friendId': friendId },
-            { $set: { 'friends.$.status': 'accepted', 'friends.$.acceptedAt': Date.now() } }
+        await userSchema.findByIdAndUpdate(
+            friendId,
+            {
+                $addToSet: {
+                    friends: { friendId: id, status: 'accepted', acceptedAt: Date.now() }
+                }
+            },
+            { new: true }
         );
 
-        await userSchema.updateOne(
-            { _id: friendId, 'friends.friendId': id },
-            { $set: { 'friends.$.status': 'accepted', 'friends.$.acceptedAt': Date.now() } }
-        );
-
-        res.status(200).json({ message: 'Solicitud de amistad aceptada' });
+        res.status(200).json({ message: 'Solicitud de amistad aceptada correctamente.' });
     } catch (error) {
         console.error('Error al aceptar la solicitud de amistad:', error);
-        res.status(500).json({ message: 'Error al aceptar la solicitud de amistad' });
+        res.status(500).json({ message: 'Error al aceptar la solicitud de amistad.' });
     }
 };
 
-// Eliminar solicitud de amistad
-exports.deleteRequest = async (req, res) => {
+// Rechazar solicitud de amistad
+exports.declineRequest = async (req, res) => {
     const { friendId } = req.body; 
-    const { id } = req.params;
-
+    const { id } = req.params; 
+    
     if (!friendId || !id) {
         return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
     }
 
     try {
-        const userUpdateResult = await userSchema.findByIdAndUpdate(id, {
-            $pull: {
-                friends: { friendId: friendId }
-            }
-        }, { new: true });
+        const updatedUser = await userSchema.findOneAndUpdate(
+            { _id: id, "friends.friendId": friendId },
+            { 
+                $set: { "friends.$.status": "rejected" } 
+            },
+            { new: true }
+        );
 
-        console.log('User Update Result:', userUpdateResult);
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'No se encontró la solicitud de amistad.' });
+        }
 
-        const friendUpdateResult = await userSchema.findByIdAndUpdate(friendId, {
-            $pull: {
-                friends: { friendId: id } 
-            }
-        }, { new: true });
+        await userSchema.findByIdAndUpdate(
+            friendId,
+            {
+                $pull: { friends: { friendId: id } }
+            },
+            { new: true }
+        );
 
-        console.log('Friend Update Result:', friendUpdateResult);
-
-        res.status(200).json({ message: 'Solicitud de amistad eliminada correctamente' });
+        res.status(200).json({ message: 'Solicitud de amistad rechazada correctamente.' });
     } catch (error) {
-        console.error('Error al eliminar la solicitud de amistad:', error);
-        res.status(500).json({ message: 'Error al eliminar la solicitud de amistad' });
+        console.error('Error al rechazar la solicitud de amistad:', error);
+        res.status(500).json({ message: 'Error al rechazar la solicitud de amistad.' });
     }
 };
