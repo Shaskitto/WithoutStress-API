@@ -217,7 +217,7 @@ exports.deleteRequest = async (req, res) => {
     try {
         await userSchema.updateOne(
             { _id: id },
-            { $pull: { friends: { friendId } } }
+            { $pull: { friends: { friendId: friendId  } } }
         );
 
         await userSchema.updateOne(
