@@ -151,6 +151,23 @@ exports.sendRequest = async (req, res) => {
     }
 };
 
+// Obtener solicitudes pendientes
+exports.getPendingRequests = async (req, res) => {
+    const { id } = req.user;  
+
+    try {
+        const user = await userSchema.findById(id).populate('friends.friendId', 'username informacion profileImage');
+
+        const pendingRequests = user.friends.filter(friend => friend.status === 'pending');
+
+        res.status(200).json(pendingRequests);
+    } catch (error) {
+        console.error('Error al obtener las solicitudes pendientes:', error);
+        res.status(500).json({ message: 'Error al obtener solicitudes pendientes' });
+    }
+};
+
+
 // Aceptar solicitud de amistad
 exports.acceptRequest = async (req, res) => {
     const { friendId } = req.body; 
