@@ -108,3 +108,110 @@ exports.uploadImage = async (req, res) => {
         message: 'Imagen cargada con éxito.',
     });
 };
+
+// Enviar solicitud de amistad
+exports.sendRequest = async (req, res) => {
+    const { friendId } = req.body; 
+    const { id } = req.params; 
+
+    if (!friendId || !id) {
+        return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
+    }
+
+    try {
+        const existingFriendship = await userSchema.findOne({ 
+            _id: id, 
+            'friends.friendId': friendId 
+        });
+
+        if (existingFriendship) {
+            return res.status(400).json({ message: 'Ya son amigos o ya hay una solicitud pendiente.' });
+        }
+
+        await userSchema.findByIdAndUpdate(id, {
+            $addToSet: {
+                friends: { friendId, status: 'pending', sentAt: Date.now() }
+            }
+        });
+
+        await userSchema.findByIdAndUpdate(friendId, {
+            $addToSet: {
+                friends: { friendId: id, status: 'pending', sentAt: Date.now() }
+            }
+        });
+
+        res.status(200).json({ 
+            message: 'Solicitud de amistad enviada', 
+            data: { friendId, status: 'pending' } 
+        });
+
+    } catch (error) {
+        console.error('Error al enviar la solicitud de amistad:', error);
+        res.status(500).json({ message: 'Error al enviar la solicitud de amistad' });
+    }
+};
+
+// Aceptar solicitud de amistad
+exports.acceptRequest = async (req, res) => {
+    const { friendId } = req.body; 
+    const { id } = req.params;
+
+    if (!friendId || !id) {
+        return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
+    }
+
+    try {
+        const user = await userSchema.findOne({ 
+            _id: id, 
+            'friends.friendId': friendId,
+            'friends.status': 'pending'
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'No se encontró una solicitud de amistad pendiente.' });
+        }
+
+        await userSchema.updateOne(
+            { _id: id, 'friends.friendId': friendId },
+            { $set: { 'friends.$.status': 'accepted', 'friends.$.acceptedAt': Date.now() } }
+        );
+
+        await userSchema.updateOne(
+            { _id: friendId, 'friends.friendId': id },
+            { $set: { 'friends.$.status': 'accepted', 'friends.$.acceptedAt': Date.now() } }
+        );
+
+        res.status(200).json({ message: 'Solicitud de amistad aceptada' });
+    } catch (error) {
+        console.error('Error al aceptar la solicitud de amistad:', error);
+        res.status(500).json({ message: 'Error al aceptar la solicitud de amistad' });
+    }
+};
+
+
+// Eliminar solicitud de amistad
+exports.deleteRequest = async (req, res) => {
+    const { friendId } = req.body; 
+    const { id } = req.params;
+
+    if (!friendId || !id) {
+        return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
+    }
+
+    try {
+        await userSchema.updateOne(
+            { _id: id },
+            { $pull: { friends: { friendId } } }
+        );
+
+        await userSchema.updateOne(
+            { _id: friendId },
+            { $pull: { friends: { friendId: id } } }
+        );
+
+        res.status(200).json({ message: 'Solicitud de amistad eliminada' });
+    } catch (error) {
+        console.error('Error al eliminar la solicitud de amistad:', error);
+        res.status(500).json({ message: 'Error al eliminar la solicitud de amistad' });
+    }
+};

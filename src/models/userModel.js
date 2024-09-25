@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema({
         type: String,
         default: 'a4dca901ab52c4a6818e250dc6bc7e14.jfif', 
     },
+    informacion: {
+        type: String,
+        trim: true,
+    },
     edad: {
         type: Number,
         min: 0,
@@ -46,6 +50,25 @@ const userSchema = mongoose.Schema({
         type: [String],
         enum: ['Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir'], 
     },
+    friends: [{
+        friendId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        status: {
+            type: String,
+            enum: ['pending', 'accepted', 'rejected'],
+            default: 'pending'
+        },
+        sentAt: {
+            type: Date,
+            default: Date.now
+        },
+        acceptedAt: {
+            type: Date
+        }
+    }],
     horario: {
         manana: {
             type: [String], 
@@ -106,7 +129,7 @@ const userSchema = mongoose.Schema({
     otpExpiration: {
         type: Date,
         default: null
-    }    
+    }
 });
 
 // Middleware para encriptar la contraseña antes de guardar el usuario

@@ -10,5 +10,11 @@ router.get('/user/:id', verifyToken, userController.getUserById);
 router.patch('/user/:id', verifyToken, upload.single('profileImage'), userController.updateUserById);
 router.get('/user/:id/profile-image', userController.getProfileImage);
 router.post('/upload', upload.single('profileImage'), userController.uploadImage);
+//router.get('/user/search-friend/:username', verifyToken, userController.searchFriend);
+router.post('/user/friends/request', verifyToken, userController.sendRequest);
+router.post('/user/friends/accept', verifyToken, userController.acceptRequest);
+router.delete('/user/friends/accept', verifyToken, userController.deleteRequest);
+//router.get('/user/friends/:friendId', verifyToken, userController.getFriendById);
+//router.delete('/user/friends/:friendId', verifyToken, userController.deleteFriend);
 
 module.exports = router;
