@@ -204,7 +204,6 @@ exports.acceptRequest = async (req, res) => {
     }
 };
 
-
 // Eliminar solicitud de amistad
 exports.deleteRequest = async (req, res) => {
     const { friendId } = req.body; 
@@ -215,15 +214,26 @@ exports.deleteRequest = async (req, res) => {
     }
 
     try {
-        await userSchema.updateOne(
+        console.log('User ID:', id);
+        console.log('Friend ID:', friendId);
+
+        const userUpdateResult = await userSchema.updateOne(
             { _id: id },
-            { $pull: { friends: { friendId: friendId  } } }
+            { $pull: { friends: { friendId: friendId } } }
         );
 
-        await userSchema.updateOne(
+        console.log('User Update Result:', userUpdateResult);
+
+        const friendUpdateResult = await userSchema.updateOne(
             { _id: friendId },
             { $pull: { friends: { friendId: id } } }
         );
+
+        console.log('Friend Update Result:', friendUpdateResult);
+
+        if (userUpdateResult.modifiedCount === 0 && friendUpdateResult.modifiedCount === 0) {
+            return res.status(404).json({ message: 'No se encontró la solicitud de amistad para eliminar.' });
+        }
 
         res.status(200).json({ message: 'Solicitud de amistad eliminada' });
     } catch (error) {
