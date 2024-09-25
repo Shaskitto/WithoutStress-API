@@ -11,7 +11,7 @@ router.patch('/user/:id', verifyToken, upload.single('profileImage'), userContro
 router.get('/user/:id/profile-image', userController.getProfileImage);
 router.post('/upload', upload.single('profileImage'), userController.uploadImage);
 //router.get('/user/search-friend/:username', verifyToken, userController.searchFriend);
-router.post('/user/friends/request:id', verifyToken, userController.sendRequest);
+router.post('/user/friends/request/:id', verifyToken, userController.sendRequest);
 router.post('/user/friends/requests/:friendId/accept', verifyToken, userController.acceptRequest);
 router.delete('/user/friends/requests/:friendId', verifyToken, userController.deleteRequest);
 //router.get('/user/friends/:friendId', verifyToken, userController.getFriendById);
