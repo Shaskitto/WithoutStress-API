@@ -212,20 +212,17 @@ exports.deleteRequest = async (req, res) => {
     }
 
     try {
-        const userId = new mongoose.Types.ObjectId(id);
-        const friendUserId = new mongoose.Types.ObjectId(friendId);
-
-        const userUpdateResult = await userSchema.findByIdAndUpdate(userId, {
+        const userUpdateResult = await userSchema.findByIdAndUpdate(id, {
             $pull: {
-                friends: { friendId: friendUserId, status: 'pending' }
+                friends: { friendId: friendId }
             }
         }, { new: true });
 
         console.log('User Update Result:', userUpdateResult);
 
-        const friendUpdateResult = await userSchema.findByIdAndUpdate(friendUserId, {
+        const friendUpdateResult = await userSchema.findByIdAndUpdate(friendId, {
             $pull: {
-                friends: { friendId: userId, status: 'pending' }
+                friends: { friendId: id } 
             }
         }, { new: true });
 
