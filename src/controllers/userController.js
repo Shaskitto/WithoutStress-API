@@ -121,12 +121,12 @@ exports.sendRequest = async (req, res) => {
     try {
         const existingRequest = await userSchema.findOne({
             _id: id,
-            "friends.friendId": friendId
+            "friends": { $elemMatch: { friendId, status: 'pending' } }
         });
 
         if (existingRequest) {
             console.log('La solicitud ya existe.');
-            return { success: false, message: 'Ya has enviado una solicitud a este amigo.' };
+            return res.status(400).json({ success: false, message: 'Ya has enviado una solicitud a este amigo.' });
         }
 
         await userSchema.findByIdAndUpdate(id, {
@@ -211,7 +211,7 @@ exports.acceptRequest = async (req, res) => {
 exports.declineRequest = async (req, res) => {
     const { friendId } = req.body; 
     const { id } = req.params; 
-    
+
     if (!friendId || !id) {
         return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
     }
