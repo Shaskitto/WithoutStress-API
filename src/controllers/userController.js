@@ -261,3 +261,23 @@ exports.getFriends = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener amigos.' });
     }
 };
+
+// Buscar amigos por nombre de usuario
+exports.searchFriend = async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const users = await userSchema.find({
+            username: { $regex: username, $options: 'i' }
+        }).select('username informacion profileImage'); 
+
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron amigos con ese nombre de usuario.' });
+        }
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error al buscar amigos:', error);
+        res.status(500).json({ message: 'Error al buscar amigos.' });
+    }
+};
