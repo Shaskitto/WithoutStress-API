@@ -119,35 +119,50 @@ exports.sendRequest = async (req, res) => {
     }
 
     try {
-        const existingRequest = await userSchema.findOne({
-            _id: id,
-            "friends": { $elemMatch: { friendId, status: 'pending' } }
-        });
+        const user = await userSchema.findById(id);
+        const friendUser = await userSchema.findById(friendId);
 
-        if (existingRequest) {
-            console.log('La solicitud ya existe.');
-            return res.status(400).json({ success: false, message: 'Ya has enviado una solicitud a este amigo.' });
+        if (!user || !friendUser) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        await userSchema.findByIdAndUpdate(id, {
-            $addToSet: {
-                friends: { friendId, status: 'sent', sentAt: Date.now() }
-            }
-        }, { new: true });
+        // Verificar si ya existe una solicitud
+        const existingFriendship = user.friends.find(friend => friend.friendId.toString() === friendId);
 
-        await userSchema.findByIdAndUpdate(friendId, {
-            $addToSet: {
-                friends: { friendId: id, status: 'pending', sentAt: Date.now() }
-            }
-        }, { new: true });
+        if (existingFriendship) {
+            if (existingFriendship.status === 'pending') {
+                return res.status(400).json({ success: false, message: 'Ya has enviado una solicitud a este amigo.' });
+            } else if (existingFriendship.status === 'rejected') {
+                existingFriendship.status = 'pending';
+                existingFriendship.sentAt = Date.now();
 
-        res.status(200).json({ message: 'Solicitud de amistad enviada correctamente.'});
+                await user.save(); 
+
+                const existingFriendshipInFriend = friendUser.friends.find(friend => friend.friendId.toString() === id);
+                if (existingFriendshipInFriend) {
+                    existingFriendshipInFriend.status = 'sent';
+                    existingFriendshipInFriend.sentAt = Date.now();
+                    await friendUser.save();
+                }
+
+                return res.status(200).json({ message: 'Solicitud de amistad actualizada correctamente.' });
+            }
+        } else {
+            user.friends.push({ friendId, status: 'pending', sentAt: Date.now() });
+            friendUser.friends.push({ friendId: id, status: 'sent', sentAt: Date.now() });
+
+            await user.save();
+            await friendUser.save();
+
+            return res.status(200).json({ message: 'Solicitud de amistad enviada correctamente.' });
+        }
 
     } catch (error) {
         console.error('Error al enviar la solicitud de amistad:', error);
         res.status(500).json({ message: 'Error al enviar la solicitud de amistad' });
     }
 };
+
 
 // Obtener solicitudes pendientes
 exports.getPendingRequests = async (req, res) => {
