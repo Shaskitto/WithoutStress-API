@@ -131,7 +131,7 @@ exports.sendRequest = async (req, res) => {
 
         await userSchema.findByIdAndUpdate(id, {
             $addToSet: {
-                friends: { friendId, status: 'pending', sentAt: Date.now() }
+                friends: { friendId, status: 'sent', sentAt: Date.now() }
             }
         }, { new: true });
 
@@ -156,8 +156,8 @@ exports.getPendingRequests = async (req, res) => {
     try {
         const user = await userSchema.findById(id).populate('friends.friendId', 'username informacion profileImage');
 
-        const pendingRequests = user.friends.filter(friend => friend.status === 'pending' && friend.friendId !== id);
-        
+        const pendingRequests = user.friends.filter(friend => friend.status === 'pending');
+
         res.status(200).json(pendingRequests);
     } catch (error) {
         console.error('Error al obtener las solicitudes pendientes:', error);
