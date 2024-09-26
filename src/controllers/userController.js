@@ -143,7 +143,6 @@ exports.sendRequest = async (req, res) => {
         res.status(200).json({ message: 'Solicitud de amistad enviada correctamente.'});
 
     } catch (error) {
-        console.error('Error al enviar la solicitud de amistad:', error);
         res.status(500).json({ message: 'Error al enviar la solicitud de amistad' });
     }
 };
@@ -159,7 +158,6 @@ exports.getPendingRequests = async (req, res) => {
 
         res.status(200).json(pendingRequests);
     } catch (error) {
-        console.error('Error al obtener las solicitudes pendientes:', error);
         res.status(500).json({ message: 'Error al obtener solicitudes pendientes' });
     }
 };
@@ -201,7 +199,6 @@ exports.acceptRequest = async (req, res) => {
 
         res.status(200).json({ message: 'Solicitud de amistad aceptada correctamente.' });
     } catch (error) {
-        console.error('Error al aceptar la solicitud de amistad:', error);
         res.status(500).json({ message: 'Error al aceptar la solicitud de amistad.' });
     }
 };
@@ -238,8 +235,29 @@ exports.declineRequest = async (req, res) => {
 
         res.status(200).json({ message: 'Solicitud de amistad rechazada correctamente.' });
     } catch (error) {
-        console.error('Error al rechazar la solicitud de amistad:', error);
         res.status(500).json({ message: 'Error al rechazar la solicitud de amistad.' });
     }
 };
 
+// Obtener amigos
+exports.getFriends = async (req, res) => {
+    const { id } = req.params; 
+
+    if (!id) {
+        return res.status(400).json({ message: 'ID de usuario es requerido.' });
+    }
+
+    try {
+        const user = await userSchema.findById(id).populate('friends.friendId', 'username informacion profileImage');
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        const acceptedFriends = user.friends.filter(friend => friend.status === 'accepted');
+
+        res.status(200).json(acceptedFriends);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener amigos.' });
+    }
+};
