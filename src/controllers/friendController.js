@@ -176,8 +176,8 @@ exports.searchFriend = async (req, res) => {
 };
 
 exports.deleteFriend = async (req, res) => {
-    const { friendId } = req.params;  
-    const { id } = req.user;  
+    const { friendId } = req.body; 
+    const { id } = req.params;  
 
     if (!friendId || !id) {
         return res.status(400).json({ message: 'ID de usuario o amigo es requerido.' });
