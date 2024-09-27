@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const userRoutes = require('./routes/user');
-const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const friendRoutes = require('./friendRoutes');
 const { connectDB, initGFS } = require('./config/db');
 
 require('dotenv').config();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api', userRoutes);
 app.use('/api', authRoutes);
+app.use('/api', friendRoutes)
 app.use('/api/uploads', express.static('uploads'));
 
 // Rutas
