@@ -185,21 +185,25 @@ exports.deleteFriend = async (req, res) => {
 
     try {
         const updatedUser = await userSchema.findOneAndUpdate(
-            { _id: id },
-            { $pull: { friends: { friendId } } },  
+            { _id: id, "friends.friendId": friendId },
+            { 
+                $pull: { friends: { friendId } } 
+            },
             { new: true }
         );
-
+        
         if (!updatedUser) {
-            return res.status(404).json({ message: 'No se encontró la amistad para eliminar.' });
+            return res.status(404).json({ message: 'No se encontró la solicitud de amistad.' });
         }
-
-        const updatedFriend = await userSchema.findOneAndUpdate(
-            { _id: friendId },
-            { $pull: { friends: { friendId: id } } },  
+        
+        await userSchema.findByIdAndUpdate(
+            friendId,
+            {
+                $pull: { friends: { friendId: id } } 
+            },
             { new: true }
         );
-
+        
         res.status(200).json({ message: 'Amigo eliminado correctamente.' });
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar el amigo.' });
