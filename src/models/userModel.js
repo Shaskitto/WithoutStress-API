@@ -29,7 +29,6 @@ const userSchema = mongoose.Schema({
         type: String,
         trim: true,
         default: 'Sin Información.',
-        min: 65,
         max: 140
     },
     edad: {
