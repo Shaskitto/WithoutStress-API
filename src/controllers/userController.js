@@ -1,5 +1,5 @@
-const userSchema = require('../models/userModel');
 const mongoose = require('mongoose');
+const userSchema = require('../models/userModel');
 
 // Obtener usuarios
 exports.getAllUsers = async (req, res) => {

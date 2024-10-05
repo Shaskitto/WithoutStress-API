@@ -1,9 +1,8 @@
-const userSchema = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const userSchema = require('../models/userModel');
 const emailMiddleware = require('../middlewares/emailMiddleware');
 
-// Crear usuario
 exports.registerUser = async (req, res) => {
     const { username, email, password } = req.body;
     

@@ -1,5 +1,4 @@
 const userSchema = require('../models/userModel');
-const mongoose = require('mongoose');
 
 // Enviar solicitud de amistad
 exports.sendRequest = async (req, res) => {
