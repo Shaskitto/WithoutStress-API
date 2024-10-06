@@ -95,7 +95,7 @@ const authController = require('../controllers/authController');
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.post('/auth/register', authController.registerUser);
+router.post('/register', authController.registerUser);
 
 /**
  * @swagger
@@ -150,7 +150,7 @@ router.post('/auth/register', authController.registerUser);
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.post('/auth/login', authController.loginUser);
+router.post('/login', authController.loginUser);
 
 /**
  * @swagger
@@ -201,7 +201,7 @@ router.post('/auth/login', authController.loginUser);
  *                   type: string
  *                   example: 'Error al procesar la solicitud.'
  */
-router.post('/auth/forgot-password', authController.forgotPassword);
+router.post('/forgot-password', authController.forgotPassword);
 
 /**
  * @swagger
@@ -254,7 +254,7 @@ router.post('/auth/forgot-password', authController.forgotPassword);
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.post('/auth/forgot-password/reset', authController.resetPassword);
+router.post('/forgot-password/reset', authController.resetPassword);
 
 /**
  * @swagger
@@ -304,7 +304,7 @@ router.post('/auth/forgot-password/reset', authController.resetPassword);
  *                   type: string
  *                   example: 'Error al procesar la solicitud.'
  */
-router.get('/auth/check-username', authController.checkUsername);
+router.get('/check-username', authController.checkUsername);
 
 /**
  * @swagger
