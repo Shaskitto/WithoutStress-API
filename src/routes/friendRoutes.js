@@ -29,6 +29,8 @@ const friendController = require('../controllers/friendController');
  *         description: Token JWT del usuario que envía la solicitud
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -102,6 +104,8 @@ router.post('/request/:id', verifyToken, friendController.sendRequest);
  *         description: Token JWT del usuario que acepta la solicitud
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -165,6 +169,8 @@ router.post('/request/accept/:id', verifyToken, friendController.acceptRequest);
  *         description: Token JWT del usuario que rechaza la solicitud
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -228,6 +234,8 @@ router.post('/request/decline/:id', verifyToken, friendController.declineRequest
  *         description: Token JWT del usuario que realiza la búsqueda
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Amigo encontrado
@@ -287,6 +295,8 @@ router.get('/search-friends/:username', verifyToken, friendController.searchFrie
  *         description: Token JWT del usuario que solicita las solicitudes pendientes
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Solicitudes de amistad pendientes obtenidas exitosamente
@@ -352,6 +362,8 @@ router.get('/request/pending/:id', verifyToken, friendController.getPendingReque
  *         description: Token JWT del usuario que solicita la lista de amigos
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de amigos obtenida exitosamente
@@ -413,6 +425,8 @@ router.get('/:id', verifyToken, friendController.getFriends);
  *         description: Token JWT del usuario que solicita la eliminación del amigo
  *         schema:
  *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Amigo eliminado exitosamente

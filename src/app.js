@@ -16,31 +16,47 @@ const port = process.env.PORT || 10000;
 // Definición de las opciones de Swagger
 const swaggerOptions = {
     swaggerDefinition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'WithoutStress API',
-        version: '1.0.0',
-        description: `
-          WithoutStress API es una plataforma diseñada para ayudar a los usuarios a gestionar el estrés a través de diversas funcionalidades.
-          Esta API proporciona acceso a herramientas como la creación de perfiles de usuario, autenticación segura, manejo de amistades y relaciones entre usuarios,
-          así como la carga y gestión de archivos (imágenes y documentos) para personalizar la experiencia del usuario.
-          
-          ### Funcionalidades principales:
-          - Gestión de usuarios: Registro, autenticación y perfil de usuario.
-          - Manejo de relaciones: Agregar y gestionar amigos o conexiones.
-          - Carga y manejo de archivos: Permite la subida de imágenes de perfil y otros archivos de interés.
-          - Documentación detallada de los endpoints y parámetros disponibles para interactuar con la API.
+        openapi: '3.0.0',
+        info: {
+            title: 'WithoutStress API',
+            version: '1.0.0',
+            description: `
+                WithoutStress API es una plataforma diseñada para ayudar a los usuarios a gestionar el estrés a través de diversas funcionalidades.
+                Esta API proporciona acceso a herramientas como la creación de perfiles de usuario, autenticación segura, manejo de amistades y relaciones entre usuarios,
+                así como la carga y gestión de archivos (imágenes y documentos) para personalizar la experiencia del usuario.
 
-          Este proyecto tiene como objetivo ofrecer una plataforma robusta para el manejo del estrés, brindando a los usuarios acceso a herramientas de relajación y apoyo personal.
+                ### Funcionalidades principales:
+                - Gestión de usuarios: Registro, autenticación y perfil de usuario.
+                - Manejo de relaciones: Agregar y gestionar amigos o conexiones.
+                - Carga y manejo de archivos: Permite la subida de imágenes de perfil y otros archivos de interés.
+                - Documentación detallada de los endpoints y parámetros disponibles para interactuar con la API.
 
-          ### Autenticación:
-          - La API utiliza autenticación por tokens (JWT) para la protección de los recursos sensibles.
+                Este proyecto tiene como objetivo ofrecer una plataforma robusta para el manejo del estrés, brindando a los usuarios acceso a herramientas de relajación y apoyo personal.
 
-          Para más detalles sobre cómo usar los diferentes endpoints, revisa las rutas y parámetros documentados a continuación.`,
-      }
+                ### Autenticación:
+                - La API utiliza autenticación por tokens (JWT) para la protección de los recursos sensibles.
+                
+                Para más detalles sobre cómo usar los diferentes endpoints, revisa las rutas y parámetros documentados a continuación.
+            `,
+        },
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+        },
+        security: [
+            {
+                bearerAuth: [],
+            },
+        ],
     },
     apis: ['./src/routes/*.js'], 
 };
+
 
 // Generar la especificación de Swagger
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

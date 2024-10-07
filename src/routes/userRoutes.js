@@ -17,6 +17,7 @@ const userController = require('../controllers/userController');
  *   post:
  *     summary: Subir una imagen de perfil
  *     tags: [User]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -68,6 +69,7 @@ router.post('/upload', upload.single('profileImage'), userController.uploadImage
  *   get:
  *     summary: Obtener todos los usuarios
  *     tags: [User]
+ *     security: []
  *     responses:
  *       200:
  *         description: Lista de usuarios obtenida exitosamente
@@ -97,12 +99,8 @@ router.get('/', userController.getAllUsers);
  *         description: ID del usuario a obtener
  *         schema:
  *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario
- *         schema:
- *           type: string
+ *     security:
+ *       - bearerAuth: []  
  *     responses:
  *       200:
  *         description: Usuario obtenido exitosamente
@@ -135,6 +133,7 @@ router.get('/:id', verifyToken, userController.getUserById);
  *   get:
  *     summary: Obtener la imagen de perfil de un usuario
  *     tags: [User]
+ *     security: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -186,12 +185,8 @@ router.get('/:id/profile-image', userController.getProfileImage);
  *         description: ID del usuario a actualizar
  *         schema:
  *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario
- *         schema:
- *           type: string
+ *     security:
+ *       - bearerAuth: []  
  *     requestBody:
  *       required: true
  *       content:
@@ -203,6 +198,59 @@ router.get('/:id/profile-image', userController.getProfileImage);
  *                 type: string
  *                 format: binary
  *                 description: Imagen de perfil del usuario (opcional)
+ *               username:
+ *                 type: string
+ *                 description: Nombre de usuario
+ *               semestre:
+ *                 type: integer
+ *                 description: Semestre del usuario (entre 1 y 4)
+ *                 minimum: 1
+ *                 maximum: 4
+ *               carrera:
+ *                 type: string
+ *                 enum: [Ingeniería de Sistemas, Ingeniería Multimedia]
+ *                 description: Carrera del usuario
+ *               edad:
+ *                 type: integer
+ *                 description: Edad del usuario
+ *               sexo:
+ *                 type: string
+ *                 enum: [Masculino, Femenino]
+ *                 description: Sexo del usuario
+ *               informacion:
+ *                 type: string
+ *                 maxLength: 140
+ *                 description: Información adicional (máximo 140 caracteres)
+ *               actividades:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [Meditación, Sonidos Relajantes, Ejercicios de respiración, Prácticas para Dormir]
+ *                 description: Actividades seleccionadas (puede elegir varias)
+ *               horario:
+ *                 type: object
+ *                 properties:
+ *                   mañana:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                       enum: [06:00-11:59]
+ *                     maxItems: 2
+ *                     description: Horario preferido en la mañana (máximo 2)
+ *                   tarde:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                       enum: [12:00-17:59]
+ *                     maxItems: 2
+ *                     description: Horario preferido en la tarde (máximo 2)
+ *                   noche:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                       enum: [18:00-23:59]
+ *                     maxItems: 2
+ *                     description: Horario preferido en la noche (máximo 2)
  *     responses:
  *       200:
  *         description: Usuario actualizado exitosamente
@@ -252,5 +300,6 @@ router.get('/:id/profile-image', userController.getProfileImage);
  *                   example: 'Error al procesar la solicitud'
  */
 router.patch('/:id', verifyToken, upload.single('profileImage'), userController.updateUserById);
+
 
 module.exports = router;

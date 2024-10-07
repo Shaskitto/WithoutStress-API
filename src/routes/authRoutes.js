@@ -15,6 +15,7 @@ const authController = require('../controllers/authController');
  *   post:
  *     summary: Registrar un nuevo usuario
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -103,6 +104,7 @@ router.post('/register', authController.registerUser);
  *   post:
  *     summary: Iniciar sesión de un usuario
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -158,6 +160,7 @@ router.post('/login', authController.loginUser);
  *   post:
  *     summary: Solicitar restablecimiento de contraseña
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -209,6 +212,7 @@ router.post('/forgot-password', authController.forgotPassword);
  *   post:
  *     summary: Restablecer la contraseña del usuario
  *     tags: [Auth]
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -262,6 +266,7 @@ router.post('/forgot-password/reset', authController.resetPassword);
  *   get:
  *     summary: Comprobar si un nombre de usuario está disponible
  *     tags: [Auth]
+ *     security: []
  *     parameters:
  *       - in: query
  *         name: username
@@ -312,6 +317,7 @@ router.get('/check-username', authController.checkUsername);
  *   get:
  *     summary: Comprobar si un correo electrónico está disponible
  *     tags: [Auth]
+ *     security: []
  *     parameters:
  *       - in: query
  *         name: email
