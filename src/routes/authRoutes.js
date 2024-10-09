@@ -98,9 +98,6 @@ const authController = require('../controllers/authController');
  */
 router.post('/register', authController.registerUser);
 
-router.get('/confirmar', authController.confirmEmail);
-
-
 /**
  * @swagger
  * /auth/login:
