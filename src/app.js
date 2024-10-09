@@ -6,6 +6,7 @@ const basicAuth = require('express-basic-auth');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const friendRoutes = require('./routes/friendRoutes');
+const resourceRoutes = require('./routes/resourceRoutes');
 const { connectDB, initGFS } = require('./config/db');
 
 require('dotenv').config();
@@ -21,23 +22,23 @@ const swaggerOptions = {
             title: 'WithoutStress API',
             version: '1.0.0',
             description: `
-                WithoutStress API es una plataforma diseñada para ayudar a los usuarios a gestionar el estrés a través de diversas funcionalidades.
-                Esta API proporciona acceso a herramientas como la creación de perfiles de usuario, autenticación segura, manejo de amistades y relaciones entre usuarios,
-                así como la carga y gestión de archivos (imágenes y documentos) para personalizar la experiencia del usuario.
+    WithoutStress API es una plataforma integral diseñada para facilitar la gestión del estrés de los usuarios a través de diversas herramientas y recursos. 
+    Esta API ofrece funcionalidades clave, incluyendo:
 
-                ### Funcionalidades principales:
-                - Gestión de usuarios: Registro, autenticación y perfil de usuario.
-                - Manejo de relaciones: Agregar y gestionar amigos o conexiones.
-                - Carga y manejo de archivos: Permite la subida de imágenes de perfil y otros archivos de interés.
-                - Documentación detallada de los endpoints y parámetros disponibles para interactuar con la API.
+    Objetivo: Este proyecto tiene como finalidad ofrecer a los usuarios acceso a herramientas de relajación y apoyo personal, promoviendo una vida más equilibrada y saludable.
+        
+    ### Funcionalidades principales:
+        - Gestión de Usuarios: Registro, autenticación segura y gestión de perfiles de usuario.
+        - Conexiones Sociales: Permite a los usuarios agregar y gestionar amistades o conexiones personales.
+        - Carga y Manejo de Recursos: Facilita la subida de archivos y recursos, y su recuperación por categoría e ID, permitiendo a los usuarios acceder a contenidos relevantes de manera eficiente.
+        - Documentación Detallada: Proporciona información exhaustiva sobre los endpoints y parámetros disponibles para la interacción con la API.
 
-                Este proyecto tiene como objetivo ofrecer una plataforma robusta para el manejo del estrés, brindando a los usuarios acceso a herramientas de relajación y apoyo personal.
 
-                ### Autenticación:
-                - La API utiliza autenticación por tokens (JWT) para la protección de los recursos sensibles.
-                
-                Para más detalles sobre cómo usar los diferentes endpoints, revisa las rutas y parámetros documentados a continuación.
-            `,
+    ### Autenticación:
+        - La API implementa un sistema de autenticación basado en tokens (JWT) para proteger los recursos sensibles y asegurar la privacidad de los usuarios.
+
+    Para más detalles sobre el uso de los diferentes endpoints, consulta las rutas y parámetros documentados a continuación.
+    `,
         },
         components: {
             securitySchemes: {
@@ -78,6 +79,7 @@ app.use('/api-docs', basicAuth(authOptions), swaggerUi.serve, swaggerUi.setup(sw
 app.use('/user', userRoutes);    
 app.use('/auth', authRoutes);
 app.use('/friend', friendRoutes)
+app.use('/resource', resourceRoutes)
 app.use('/uploads', express.static('uploads'));
 
 // Ruta principal

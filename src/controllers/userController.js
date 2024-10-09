@@ -27,7 +27,7 @@ exports.getUserById = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
         
-        const imageUrl = `${process.env.API_URL}/api/users/${id}/profile-image`;
+        const imageUrl = `${process.env.API_URL}/user/${id}/profile-image`;
 
         res.status(200).json({...user._doc, profileImage: imageUrl}); 
 
