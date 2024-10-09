@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 const emailMiddleware = require('../middlewares/emailMiddleware');
 
+// Registrar usuario
 exports.registerUser = async (req, res) => {
     const { username, email, password } = req.body;
     
@@ -31,18 +32,51 @@ exports.registerUser = async (req, res) => {
             }
         }
     
-        const user = new userSchema({ email: lowerCaseEmail, username: lowerCaseUsername, password });
+        const user = new userSchema({ email: lowerCaseEmail, username: lowerCaseUsername, password, isValidated: false });
         const savedUser = await user.save();
+
+        await emailMiddleware.sendEmail(
+            lowerCaseEmail,
+            'Confirma tu correo electrónico',
+            `Gracias por registrarte. Por favor, confirma tu correo electrónico haciendo clic en el siguiente enlace: 
+            <a href="myapp://confirmar?email=${lowerCaseEmail}">Confirmar mi correo</a>`
+        );
     
         res.status(201).json({
             id: savedUser._id,
             username: savedUser.username,
             email: savedUser.email, 
+            isValited: savedUser.email
         });
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar el usuario.', error: error.message });
     }
 };
+
+// Ruta para confirmar el correo electrónico
+exports.confirmEmail = async (req, res) => {
+    const { email } = req.query;
+
+    try {
+        const user = await userSchema.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        if (user.isValidated) {
+            return res.status(400).json({ message: 'El correo electrónico ya ha sido confirmado.' });
+        }
+
+        user.isValidated = true; 
+        await user.save();
+
+        res.status(200).json({ message: 'Correo electrónico confirmado exitosamente.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al confirmar el correo electrónico.', error: error.message });
+    }
+};
+
 
 // Iniciar sesion
 exports.loginUser = async (req, res) => {
@@ -71,6 +105,11 @@ exports.loginUser = async (req, res) => {
 // Verificar user para restablecer contraseña 
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: 'Email no válido' });
+    }
 
     try {
         const user = await userSchema.findOne({ email });
