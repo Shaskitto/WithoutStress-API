@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const resourceSchema = mongoose.Schema({
     categoria: {
         type: String,
-        enum: ['Aprender', 'Meditacion', 'Sonidos Relajantes', 'Ejercicios de respiracion', 'Practicas para Dormir', 'Musica'], 
+        enum: ['Aprender', 'Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir', 'Música'], 
         required: true
     },
     titulo: {
