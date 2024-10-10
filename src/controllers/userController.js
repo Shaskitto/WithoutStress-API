@@ -76,7 +76,7 @@ exports.getProfileImage = async (req, res) => {
         const user = await userSchema.findById(id);
 
         if (!user || !user.profileImage) {
-            return res.status(404).json({ message: 'User or image not found' });
+            return res.status(404).json({ message: 'Usuario o imagen no encontrado' });
         }
 
         const filename = user.profileImage; 
@@ -88,13 +88,13 @@ exports.getProfileImage = async (req, res) => {
         const downloadStream = bucket.openDownloadStreamByName(filename);
 
         downloadStream.on('error', (err) => {
-            return res.status(404).json({ message: 'File not found' });
+            return res.status(404).json({ message: 'Archivo no encontrado' });
         });
         
         res.set('Content-Type', 'image/jpeg');
         downloadStream.pipe(res);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching image' });
+        res.status(500).json({ message: 'Error al obtener la imagen' });
     }
 };
 

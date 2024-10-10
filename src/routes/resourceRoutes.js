@@ -81,6 +81,29 @@ router.post('/create', upload.single('contenido'), resourceController.createReso
 
 /**
  * @swagger
+ * /resource:
+ *   get:
+ *     summary: Obtener todos los recursos
+ *     tags: [Resource]
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: Lista de recursos obtenida exitosamente
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Error al procesar la solicitud'
+ */
+router.get('/', resourceController.getAllResources);
+
+/**
+ * @swagger
  * /resource/categoria/{categoria}:
  *   get:
  *     summary: Obtener recursos por categoría
@@ -184,5 +207,68 @@ router.get('/categoria/:categoria', verifyToken, resourceController.getByCategor
  *                   example: 'Error al procesar la solicitud'
  */
 router.get('/:id', verifyToken, resourceController.getResourceById);
+
+/**
+ * @swagger
+ * /resource/{id}/contenido:
+ *   get:
+ *     summary: Obtener el contenido de un recurso por ID (PDF o audio)
+ *     tags: [Resource]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del recurso a obtener
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []  
+ *     responses:
+ *       200:
+ *         description: Contenido del recurso obtenido exitosamente
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *               description: Contenido del recurso en formato PDF
+ *           audio/mpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *               description: Contenido del recurso en formato de audio
+ *       400:
+ *         description: Petición incorrecta (ID inválido)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'ID del recurso inválido'
+ *       404:
+ *         description: Recurso no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Recurso no encontrado'
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Error al procesar la solicitud'
+ */
+router.get('/:id/contenido', verifyToken, resourceController.getContent);
+
 
 module.exports = router;

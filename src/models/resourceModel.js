@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 
 const resourceSchema = mongoose.Schema({
-    profileImage: {
-        type: String
-    },
     categoria: {
         type: String,
         enum: ['Aprender', 'Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir', 'Musica'], 
