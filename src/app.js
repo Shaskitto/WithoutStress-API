@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const cron = require('node-cron');
+const axios = require('axios');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const basicAuth = require('express-basic-auth');
@@ -85,6 +87,20 @@ app.use('/uploads', express.static('uploads'));
 // Ruta principal
 app.get('/', (req, res) => {
     res.send(`<h1>WithoutStress API</h1><p>Current version: 1.0.0</p>`);
+});
+
+// Mantener activa la API
+cron.schedule('*/14 * * * *', () => {
+    console.log('Ejecutando tarea cada 10 minutos');
+    
+    // Hacer una solicitud a la ruta de tu API
+    axios.get('https://withoutstress-api.onrender.com')
+        .then(response => {
+            console.log('Respuesta de la API:', response.data);
+        })
+        .catch(error => {
+            console.error('Error al hacer la solicitud:', error);
+        });
 });
 
 // Conectar a MongoDB e inicializar GridFS
