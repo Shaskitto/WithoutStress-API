@@ -91,9 +91,6 @@ app.get('/', (req, res) => {
 
 // Mantener activa la API
 cron.schedule('*/14 * * * *', () => {
-    console.log('Ejecutando tarea cada 10 minutos');
-    
-    // Hacer una solicitud a la ruta de tu API
     axios.get('https://withoutstress-api.onrender.com')
         .then(response => {
             console.log('Respuesta de la API:', response.data);
