@@ -68,6 +68,50 @@ exports.updateUserById = async (req, res) => {
     }
 };
 
+// Crear notas de un usuario
+exports.updateNotes = async (req, res) => {
+    const { id } = req.params;
+    const { contenido, fecha } = req.body;
+
+    try {
+        const user = await userSchema.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        if (!contenido || !fecha) {
+            return res.status(400).json({ message: 'El contenido y la fecha son obligatorios.' });
+        }
+
+        const nuevaNota = { contenido, fecha };
+        user.notasPersonales.push(nuevaNota);
+
+        await user.save();
+
+        res.status(201).json({ message: 'Nota agregada correctamente.', nota: nuevaNota });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al agregar la nota.', error: error.message });
+    }
+};
+
+// Obtener las notas de un usuario
+exports.getNotes = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await userSchema.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado.' });
+        }
+
+        res.status(200).json({ notas: user.notasPersonales });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener las notas.', error: error.message });
+    }
+};
+
 // Obtener imagen de perfil de un usuario
 exports.getProfileImage = async (req, res) => {
     const { id } = req.params;

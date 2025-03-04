@@ -130,7 +130,20 @@ const userSchema = mongoose.Schema({
     otpExpiration: {
         type: Date,
         default: null
-    }
+    },
+    notasPersonales: [
+        {
+            fecha: { 
+                type: Date, 
+                required: true }, 
+
+            contenido: { 
+                type: String, 
+                required: true, 
+                trim: true 
+            } 
+        }
+    ]
 });
 
 // Middleware para encriptar la contraseña antes de guardar el usuario

@@ -301,5 +301,148 @@ router.get('/:id/profile-image', userController.getProfileImage);
  */
 router.patch('/:id', verifyToken, upload.single('profileImage'), userController.updateUserById);
 
+/**
+ * @swagger
+ * /user/notes/{id}:
+ *   patch:
+ *     summary: Agregar una nota personal a un usuario
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del usuario al que se le agregará la nota
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               contenido:
+ *                 type: string
+ *                 description: Contenido de la nota
+ *                 example: "Revisión del proyecto final"
+ *               fecha:
+ *                 type: string
+ *                 format: date
+ *                 description: Fecha para la nota (Formato YYYY-MM-DD)
+ *                 example: "2025-04-10"
+ *     responses:
+ *       201:
+ *         description: Nota agregada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Nota agregada correctamente"
+ *                 nota:
+ *                   type: object
+ *                   properties:
+ *                     fecha:
+ *                       type: string
+ *                       format: date
+ *                       example: "2025-04-10"
+ *                     contenido:
+ *                       type: string
+ *                       example: "Revisión del proyecto final"
+ *       400:
+ *         description: Petición incorrecta (datos inválidos)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "La nota no puede estar vacía"
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario no encontrado"
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error al procesar la solicitud"
+ */
+router.patch('/notes/:id', verifyToken, userController.updateNotes);
+
+/**
+ * @swagger
+ * /user/notes/{id}:
+ *   get:
+ *     summary: Obtener todas las notas personales de un usuario
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del usuario para obtener sus notas
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Notas obtenidas exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 notas:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       fecha:
+ *                         type: string
+ *                         format: date
+ *                         example: "2025-04-10"
+ *                       contenido:
+ *                         type: string
+ *                         example: "Revisión del proyecto final"
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario no encontrado"
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error al procesar la solicitud"
+ */
+router.get('/notes/:id', verifyToken, userController.getNotes);
+
 
 module.exports = router;
