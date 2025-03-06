@@ -96,17 +96,17 @@ exports.forgotPassword = async (req, res) => {
             'Restablecimiento de Contraseña',
             `Estimado/a usuario/a,
 
-            Hemos recibido una solicitud para restablecer la contraseña de su cuenta en WithoutStress. Para continuar con el proceso, utilice el siguiente código de verificación:
+Hemos recibido una solicitud para restablecer la contraseña de su cuenta en WithoutStress. Para continuar con el proceso, utilice el siguiente código de verificación:
 
-            **Código de verificación:** ${otp}
+**Código de verificación:** ${otp}
 
-            Por razones de seguridad, este código tiene una validez limitada. Si usted no ha solicitado este cambio, le recomendamos ignorar este mensaje.
+Por razones de seguridad, este código tiene una validez limitada. Si usted no ha solicitado este cambio, le recomendamos ignorar este mensaje.
 
-            Si necesita asistencia adicional, no dude en contactar a nuestro equipo de soporte.
+Si necesita asistencia adicional, no dude en contactar a nuestro equipo de soporte.
 
-            Atentamente,  
-            Equipo de Soporte  
-            WithoutStress`
+Atentamente,  
+Equipo de Soporte  
+WithoutStress`
         );
 
         res.status(200).json({ message: 'Código OTP enviado al correo' });
