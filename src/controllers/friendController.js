@@ -73,7 +73,16 @@ exports.acceptRequest = async (req, res) => {
                 } 
             },
             { new: true }
-        );        
+        );
+        
+        await userSchema.findOneAndUpdate(
+            { _id: friendId, "friends.friendId": { $ne: id } }, 
+            { 
+                $push: { 
+                    friends: { friendId: id, status: "accepted", acceptedAt: Date.now() } 
+                }
+            }
+        );
         
         res.status(200).json({ message: 'Solicitud de amistad aceptada correctamente.' });
     } catch (error) {
@@ -147,7 +156,7 @@ exports.getFriends = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        const acceptedFriends = user.friends.filter(friend => friend.status === 'accepted');
+        const acceptedFriends = user.friends.filter(friend => friend.status === 'accepted' && friend.friendId);
 
         res.status(200).json(acceptedFriends);
     } catch (error) {
