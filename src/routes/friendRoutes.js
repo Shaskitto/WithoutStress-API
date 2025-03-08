@@ -12,21 +12,15 @@ const friendController = require('../controllers/friendController');
 
 /**
  * @swagger
- * /friend/request/{id}:
+ * /friend/request/{UserId}:
  *   post:
  *     summary: Enviar una solicitud de amistad
  *     tags: [Friend]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: UserId
  *         required: true
  *         description: ID del usuario
- *         schema:
- *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que envía la solicitud
  *         schema:
  *           type: string
  *     security:
@@ -87,21 +81,15 @@ router.post('/request/:id', verifyToken, friendController.sendRequest);
 
 /**
  * @swagger
- * /friend/request/accept/{id}:
+ * /friend/request/accept/{UserId}:
  *   post:
  *     summary: Aceptar una solicitud de amistad
  *     tags: [Friend]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: UserId
  *         required: true
  *         description: ID del usuario
- *         schema:
- *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que acepta la solicitud
  *         schema:
  *           type: string
  *     security:
@@ -152,21 +140,15 @@ router.post('/request/accept/:id', verifyToken, friendController.acceptRequest);
 
 /**
  * @swagger
- * /friend/request/decline/{id}:
+ * /friend/request/decline/{UserId}:
  *   post:
  *     summary: Rechazar una solicitud de amistad
  *     tags: [Friend]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: UserId
  *         required: true
  *         description: ID del usuario
- *         schema:
- *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que rechaza la solicitud
  *         schema:
  *           type: string
  *     security:
@@ -228,12 +210,6 @@ router.post('/request/decline/:id', verifyToken, friendController.declineRequest
  *         description: Nombre de usuario del amigo a buscar
  *         schema:
  *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que realiza la búsqueda
- *         schema:
- *           type: string
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -278,21 +254,15 @@ router.get('/search-friends/:username', verifyToken, friendController.searchFrie
 
 /**
  * @swagger
- * /friend/request/pending/{id}:
+ * /friend/request/pending/{UserId}:
  *   get:
  *     summary: Obtener solicitudes de amistad pendientes
  *     tags: [Friend]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: UserId
  *         required: true
  *         description: ID del usuario 
- *         schema:
- *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que solicita las solicitudes pendientes
  *         schema:
  *           type: string
  *     security:
@@ -345,21 +315,15 @@ router.get('/request/pending/:id', verifyToken, friendController.getPendingReque
 
 /**
  * @swagger
- * /friend/{id}:
+ * /friend/{UserId}:
  *   get:
  *     summary: Obtener amigos de un usuario
  *     tags: [Friend]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: UserId
  *         required: true
  *         description: ID del usuario
- *         schema:
- *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que solicita la lista de amigos
  *         schema:
  *           type: string
  *     security:
@@ -408,21 +372,15 @@ router.get('/:id', verifyToken, friendController.getFriends);
 
 /**
  * @swagger
- * /friend/{id}:
+ * /friend/{FriendId}:
  *   delete:
  *     summary: Eliminar un amigo
  *     tags: [Friend]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: FriendId
  *         required: true
- *         description: ID del usuario
- *         schema:
- *           type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Token JWT del usuario que solicita la eliminación del amigo
+ *         description: ID del usuario a eliminar
  *         schema:
  *           type: string
  *     security:
@@ -460,6 +418,5 @@ router.get('/:id', verifyToken, friendController.getFriends);
  *                   example: 'Error al eliminar el amigo.'
  */
 router.post('/:id', verifyToken, friendController.deleteFriend);
-
 
 module.exports = router;

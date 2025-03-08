@@ -69,9 +69,9 @@ exports.updateUserById = async (req, res) => {
 };
 
 // Crear notas de un usuario
-exports.updateNotes = async (req, res) => {
+exports.createNotes = async (req, res) => {
     const { id } = req.params;
-    const { contenido, fecha } = req.body;
+    const { titulo, contenido, fecha, hora } = req.body;
 
     try {
         const user = await userSchema.findById(id);
@@ -80,11 +80,11 @@ exports.updateNotes = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        if (!contenido || !fecha) {
-            return res.status(400).json({ message: 'El contenido y la fecha son obligatorios.' });
+        if (!titulo || !contenido || !fecha || !hora) {
+            return res.status(400).json({ message: 'El título, el contenido, la fecha y la hora son obligatorios.' });
         }
 
-        const nuevaNota = { contenido, fecha };
+        const nuevaNota = { titulo, contenido, fecha, hora };
         user.notasPersonales.push(nuevaNota);
 
         await user.save();
@@ -92,6 +92,64 @@ exports.updateNotes = async (req, res) => {
         res.status(201).json({ message: 'Nota agregada correctamente.', nota: nuevaNota });
     } catch (error) {
         res.status(500).json({ message: 'Error al agregar la nota.', error: error.message });
+    }
+};
+
+// Actualizar una nota de un usuario
+exports.updateNotes = async (req, res) => {
+    try {
+        const { id, noteId } = req.params;
+        const { titulo, contenido, fecha, hora } = req.body;
+
+        const user = await userSchema.findById(id);
+        if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
+
+        const note = user.notasPersonales.id(noteId);
+        if (!note) return res.status(404).json({ message: "Nota no encontrada" });
+
+        if (titulo) note.titulo = titulo;
+        if (contenido) note.contenido = contenido;
+        if (fecha) note.fecha = fecha;
+        if (hora) note.hora = hora;
+
+        await user.save();
+
+        res.status(200).json({
+        message: "Nota actualizada correctamente",
+        nota: note
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al procesar la solicitud" });
+    }
+};
+  
+// Eliminar una nota de un usuario
+exports.deleteNotes = async (req, res) => {
+    try {
+        const { id, noteId } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(noteId)) {
+            return res.status(400).json({ message: "ID de usuario o nota inválido" });
+        }
+
+        const user = await userSchema.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
+        const initialLength = user.notasPersonales.length;
+        user.notasPersonales = user.notasPersonales.filter(note => note._id.toString() !== noteId);
+
+        if (user.notasPersonales.length === initialLength) {
+            return res.status(404).json({ message: "Nota no encontrada" });
+        }
+        await user.save();
+
+        res.status(200).json({ message: "Nota eliminada correctamente" });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al eliminar la nota", error: error.message });
     }
 };
 

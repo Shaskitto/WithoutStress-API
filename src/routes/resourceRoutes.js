@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { upload } = require('../config/db');
-const verifyToken = require('../middlewares/authJwt');
-const resourceController = require('../controllers/resourceController');
+const { upload } = require("../config/db");
+const verifyToken = require("../middlewares/authJwt");
+const resourceController = require("../controllers/resourceController");
 
 /**
  * @swagger
@@ -77,7 +77,7 @@ const resourceController = require('../controllers/resourceController');
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.post('/create', upload.single('contenido'), resourceController.createResource);
+router.post("/create", upload.single("contenido"), resourceController.createResource);
 
 /**
  * @swagger
@@ -100,7 +100,7 @@ router.post('/create', upload.single('contenido'), resourceController.createReso
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.get('/', resourceController.getAllResources);
+router.get("/", resourceController.getAllResources);
 
 /**
  * @swagger
@@ -116,7 +116,7 @@ router.get('/', resourceController.getAllResources);
  *         schema:
  *           type: string
  *     security:
- *       - bearerAuth: []  
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Recursos obtenidos exitosamente
@@ -154,23 +154,23 @@ router.get('/', resourceController.getAllResources);
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.get('/categoria/:categoria', verifyToken, resourceController.getByCategory);
+router.get("/categoria/:categoria", verifyToken, resourceController.getByCategory);
 
 /**
  * @swagger
- * /resource/{id}:
+ * /resource/{ResourceId}:
  *   get:
  *     summary: Obtener un recurso por ID
  *     tags: [Resource]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: ResourceId
  *         required: true
  *         description: ID del recurso a obtener
  *         schema:
  *           type: string
  *     security:
- *       - bearerAuth: []  
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Recurso obtenido exitosamente
@@ -206,23 +206,23 @@ router.get('/categoria/:categoria', verifyToken, resourceController.getByCategor
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.get('/:id', verifyToken, resourceController.getResourceById);
+router.get("/:id", verifyToken, resourceController.getResourceById);
 
 /**
  * @swagger
- * /resource/{id}/contenido:
+ * /resource/{ResourceId}/contenido:
  *   get:
- *     summary: Obtener el contenido de un recurso por ID (PDF o audio)
+ *     summary: Obtener el contenido de un recurso por ID
  *     tags: [Resource]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: ResourceId
  *         required: true
  *         description: ID del recurso a obtener
  *         schema:
  *           type: string
  *     security:
- *       - bearerAuth: []  
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Contenido del recurso obtenido exitosamente
@@ -268,7 +268,6 @@ router.get('/:id', verifyToken, resourceController.getResourceById);
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.get('/:id/contenido', verifyToken, resourceController.getContent);
-
+router.get("/:id/contenido", verifyToken, resourceController.getContent);
 
 module.exports = router;

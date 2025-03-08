@@ -141,7 +141,19 @@ const userSchema = mongoose.Schema({
                 type: String, 
                 required: true, 
                 trim: true 
-            } 
+            },
+
+            titulo: {
+                type: String, 
+                required: true, 
+                trim: true 
+            },
+
+            hora: { 
+                type: String, 
+                required: true, 
+                trim: true 
+            }           
         }
     ]
 });

@@ -66,7 +66,6 @@ exports.getResourceById = async (req, res) => {
             return res.status(404).json({ message: 'Recurso no encontrado.' });
         }
 
-        console.log('Recurso encontrado:', resource);
         res.status(200).json(resource);
     } catch (error) {
         res.status(400).json({ error: error.message });
