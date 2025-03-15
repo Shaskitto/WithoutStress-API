@@ -24,23 +24,23 @@ const swaggerOptions = {
             title: 'WithoutStress API',
             version: '1.0.0',
             description: `
-    WithoutStress API es una plataforma integral diseñada para facilitar la gestión del estrés de los usuarios a través de diversas herramientas y recursos. 
-    Esta API ofrece funcionalidades clave, incluyendo:
+WithoutStress API es una plataforma diseñada para ayudar a los usuarios a gestionar el estrés a través de diversas herramientas y recursos.  
+Esta API proporciona funcionalidades esenciales para mejorar la experiencia del usuario en el ámbito del bienestar y la relajación.
 
-    Objetivo: Este proyecto tiene como finalidad ofrecer a los usuarios acceso a herramientas de relajación y apoyo personal, promoviendo una vida más equilibrada y saludable.
-        
-    ### Funcionalidades principales:
-        - Gestión de Usuarios: Registro, autenticación segura y gestión de perfiles de usuario.
-        - Conexiones Sociales: Permite a los usuarios agregar y gestionar amistades o conexiones personales.
-        - Carga y Manejo de Recursos: Facilita la subida de archivos y recursos, y su recuperación por categoría e ID, permitiendo a los usuarios acceder a contenidos relevantes de manera eficiente.
-        - Documentación Detallada: Proporciona información exhaustiva sobre los endpoints y parámetros disponibles para la interacción con la API.
+## 📌 Objetivo  
+Ofrecer a los usuarios un conjunto de herramientas digitales que promuevan el bienestar emocional, la relajación y el equilibrio personal.
 
+## 🚀 Funcionalidades  
+- **Gestión de Usuarios:** Registro, autenticación segura mediante JWT y administración de perfiles.  
+- **Conexiones Sociales:** Agregar, gestionar y eliminar amistades para fomentar la interacción entre usuarios.  
+- **Manejo de Recursos:** Subida y recuperación de archivos categorizados, proporcionando acceso eficiente a contenido relevante.  
+- **Documentación Interactiva:** Descripción detallada de los endpoints, parámetros y esquemas de respuesta.  
 
-    ### Autenticación:
-        - La API implementa un sistema de autenticación basado en tokens (JWT) para proteger los recursos sensibles y asegurar la privacidad de los usuarios.
+## 🔐 Autenticación  
+La API implementa autenticación basada en tokens (**JWT**) para proteger los recursos sensibles y garantizar la seguridad de los datos de los usuarios.
 
-    Para más detalles sobre el uso de los diferentes endpoints, consulta las rutas y parámetros documentados a continuación.
-    `,
+Para más detalles sobre el uso de los diferentes endpoints, consulta la documentación a continuación.
+`,
         },
         components: {
             securitySchemes: {
@@ -60,13 +60,12 @@ const swaggerOptions = {
     apis: ['./src/routes/*.js'], 
 };
 
-
 // Generar la especificación de Swagger
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 // Configuración de autenticación básica para /api-docs
 const authOptions = {
-    users: { 'Admin': 'WS2024' }, 
+    users: { 'Admin': 'WS2025' }, 
     challenge: true, 
     unauthorizedResponse: 'Acceso denegado' 
 };
