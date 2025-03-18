@@ -202,29 +202,29 @@ exports.getProfileImage = async (req, res) => {
 
 // Registro estado de ánimo de un usuario
 exports.mood = async (req, res)  => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
     try {
-        const { estado } = req.body;
-        const { id } = req.params;
+        const user = await userSchema.findById(id);
+        if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-        if (!['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal'].includes(estado)) {
-            return res.status(400).json({ message: 'Estado de ánimo no válido' });
-        }
+        const today = new Date().toISOString().split('T')[0]; 
 
-        // Agregar nuevo registro de estado de ánimo
-        const user = await userSchema.findByIdAndUpdate(
-            id,
-            { $push: { estadoDeAnimo: { estado, fecha: new Date() } } },
-            { new: true }
+        const hasMoodToday = user.estadoDeAnimo.some(mood =>
+            new Date(mood.fecha).toISOString().split('T')[0] === today
         );
 
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
+        if (hasMoodToday) {
+            return res.status(400).json({ error: 'Ya registraste tu estado de ánimo hoy.' });
         }
 
-        res.json({ message: 'Estado de ánimo registrado', estadoDeAnimo: user.estadoDeAnimo });
+        user.estadoDeAnimo.push({ fecha: new Date(), estado });
+        await user.save();
 
+        res.json({ message: 'Estado de ánimo registrado con éxito', mood: estado });
     } catch (error) {
-        res.status(500).json({ message: 'Error al registrar estado de ánimo', error: error.message });
+        res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 

@@ -232,7 +232,7 @@ router.post('/upload', upload.single('profileImage'), userController.uploadImage
 
 /**
  * @swagger
- * /user/estado-de-animo/{userId}:
+ * /user/mood/{userId}:
  *   post:
  *     summary: Registrar estado de ánimo del usuario
  *     tags: [User]
@@ -309,7 +309,7 @@ router.post('/upload', upload.single('profileImage'), userController.uploadImage
  *                   type: string
  *                   example: "Error al procesar la solicitud."
  */
-router.post('/estado-de-animo/:id', verifyToken, userController.mood)
+router.post('/mood/:id', verifyToken, userController.mood)
 
 /**
  * @swagger
