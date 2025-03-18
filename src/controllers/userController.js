@@ -200,6 +200,34 @@ exports.getProfileImage = async (req, res) => {
     }
 };
 
+// Registro estado de ánimo de un usuario
+exports.mood = async (req, res)  => {
+    try {
+        const { estado } = req.body;
+        const { id } = req.params;
+
+        if (!['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal'].includes(estado)) {
+            return res.status(400).json({ message: 'Estado de ánimo no válido' });
+        }
+
+        // Agregar nuevo registro de estado de ánimo
+        const user = await userSchema.findByIdAndUpdate(
+            id,
+            { $push: { estadoDeAnimo: { estado, fecha: new Date() } } },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        res.json({ message: 'Estado de ánimo registrado', estadoDeAnimo: user.estadoDeAnimo });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al registrar estado de ánimo', error: error.message });
+    }
+};
+
 // cargar imagen por defecto al usuario
 exports.uploadImage = async (req, res) => {
     if (!req.file) {

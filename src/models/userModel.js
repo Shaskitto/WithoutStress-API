@@ -155,6 +155,20 @@ const userSchema = mongoose.Schema({
                 trim: true 
             }           
         }
+    ],
+    estadoDeAnimo: [
+        {
+            fecha: { 
+                type: Date, 
+                required: true, 
+                default: Date.now 
+            },
+            estado: { 
+                type: String, 
+                enum: ['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal'], 
+                required: true 
+            }
+        }
     ]
 });
 

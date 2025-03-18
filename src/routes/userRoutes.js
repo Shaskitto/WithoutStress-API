@@ -65,6 +65,87 @@ router.post('/upload', upload.single('profileImage'), userController.uploadImage
 
 /**
  * @swagger
+ * /user/estado-de-animo/{userId}:
+ *   post:
+ *     summary: Registrar estado de ánimo del usuario
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []  
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID del usuario que registra su estado de ánimo.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               estado:
+ *                 type: string
+ *                 enum: ["Muy bien", "Bien", "Neutro", "Mal", "Muy mal"]
+ *                 description: Estado de ánimo del usuario.
+ *                 example: "Bien"
+ *     responses:
+ *       200:
+ *         description: Estado de ánimo registrado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Estado de ánimo registrado con éxito."
+ *                 estadoDeAnimo:
+ *                   type: object
+ *                   properties:
+ *                     estado:
+ *                       type: string
+ *                       example: "Bien"
+ *                     fecha:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-03-18T14:30:00.000Z"
+ *       400:
+ *         description: Petición incorrecta (estado de ánimo inválido).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "El estado de ánimo proporcionado no es válido."
+ *       404:
+ *         description: Usuario no encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario no encontrado."
+ *       500:
+ *         description: Error en el servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error al procesar la solicitud."
+ */
+router.post('/estado-de-animo/:id', verifyToken, userController.mood)
+
+/**
+ * @swagger
  * /user:
  *   get:
  *     summary: Obtener todos los usuarios
