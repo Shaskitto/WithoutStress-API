@@ -309,7 +309,7 @@ router.post('/upload', upload.single('profileImage'), userController.uploadImage
  *                   type: string
  *                   example: "Error al procesar la solicitud."
  */
-router.post('/mood/:id', verifyToken, userController.mood)
+router.post('/mood/:id', verifyToken, userController.registerMood )
 
 /**
  * @swagger
