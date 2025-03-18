@@ -203,33 +203,41 @@ exports.getProfileImage = async (req, res) => {
 // Registro estado de ánimo de un usuario
 exports.registerMood = async (req, res)  => {
     const { id } = req.params;
-    const { mood } = req.body;
-
+    const { estado } = req.body;
+    
     try {
+        const validMoods = ['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal'];
+        if (!validMoods.includes(estado)) {
+            return res.status(400).json({ error: 'Estado de ánimo inválido' });
+        }
+
         const user = await userSchema.findById(id);
-        
         if (!user) {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
+        // Obtener la fecha actual en formato UTC sin horas, minutos ni segundos
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        today.setUTCHours(0, 0, 0, 0);
 
+        // Verificar si ya registró su estado de ánimo hoy
         const alreadyRegistered = user.estadoDeAnimo.some(entry => {
             const entryDate = new Date(entry.fecha);
-            entryDate.setHours(0, 0, 0, 0);
+            entryDate.setUTCHours(0, 0, 0, 0);
             return entryDate.getTime() === today.getTime();
         });
 
         if (alreadyRegistered) {
             return res.status(400).json({ error: 'Ya registraste tu estado de ánimo hoy.' });
         }
-        
-        user.estadoDeAnimo.push({ fecha: new Date(), estado: mood });
+
+        // Registrar el nuevo estado de ánimo
+        user.estadoDeAnimo.push({ fecha: new Date(), estado });
         await user.save();
 
         res.status(200).json({ message: 'Estado de ánimo registrado con éxito' });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Error al registrar estado de ánimo' });
     }
 };
