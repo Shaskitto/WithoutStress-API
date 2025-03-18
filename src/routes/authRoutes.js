@@ -11,6 +11,106 @@ const authController = require('../controllers/authController');
 
 /**
  * @swagger
+ * /auth/check-username:
+ *   get:
+ *     summary: Comprobar si un nombre de usuario está disponible
+ *     tags: [Auth]
+ *     security: []
+ *     parameters:
+ *       - in: query
+ *         name: username
+ *         required: true
+ *         description: Nombre de usuario a comprobar
+ *         schema:
+ *           type: string
+ *           example: 'usuario123'
+ *     responses:
+ *       200:
+ *         description: Nombre de usuario disponible
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 available:
+ *                   type: boolean
+ *                   example: true
+ *                   description: Indica si el nombre de usuario está disponible
+ *       409:
+ *         description: Nombre de usuario ya existe en el sistema
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 available:
+ *                   type: boolean
+ *                   example: false
+ *                   description: Indica que el nombre de usuario no está disponible
+ *       500:
+ *         description: Error en el servidor al procesar la solicitud
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Error al procesar la solicitud.'
+ */
+router.get('/check-username', authController.checkUsername);
+
+/**
+ * @swagger
+ * /auth/check-email:
+ *   get:
+ *     summary: Comprobar si un correo electrónico está disponible
+ *     tags: [Auth]
+ *     security: []
+ *     parameters:
+ *       - in: query
+ *         name: email
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: email
+ *           description: Correo electrónico a verificar
+ *     responses:
+ *       200:
+ *         description: Correo electrónico disponible
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'El correo electrónico está disponible'
+ *       409:
+ *         description: Correo electrónico ya existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'El correo electrónico ya está registrado'
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Error al procesar la solicitud'
+ */
+router.get('/check-email', authController.checkEmail);
+
+/**
+ * @swagger
  * /auth/register:
  *   post:
  *     summary: Registrar un nuevo usuario
@@ -259,106 +359,5 @@ router.post('/forgot-password', authController.forgotPassword);
  *                   example: 'Error al procesar la solicitud'
  */
 router.post('/forgot-password/reset', authController.resetPassword);
-
-/**
- * @swagger
- * /auth/check-username:
- *   get:
- *     summary: Comprobar si un nombre de usuario está disponible
- *     tags: [Auth]
- *     security: []
- *     parameters:
- *       - in: query
- *         name: username
- *         required: true
- *         description: Nombre de usuario a comprobar
- *         schema:
- *           type: string
- *           example: 'usuario123'
- *     responses:
- *       200:
- *         description: Nombre de usuario disponible
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 available:
- *                   type: boolean
- *                   example: true
- *                   description: Indica si el nombre de usuario está disponible
- *       409:
- *         description: Nombre de usuario ya existe en el sistema
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 available:
- *                   type: boolean
- *                   example: false
- *                   description: Indica que el nombre de usuario no está disponible
- *       500:
- *         description: Error en el servidor al procesar la solicitud
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Error al procesar la solicitud.'
- */
-router.get('/check-username', authController.checkUsername);
-
-/**
- * @swagger
- * /auth/check-email:
- *   get:
- *     summary: Comprobar si un correo electrónico está disponible
- *     tags: [Auth]
- *     security: []
- *     parameters:
- *       - in: query
- *         name: email
- *         required: true
- *         schema:
- *           type: string
- *           format: email
- *           description: Correo electrónico a verificar
- *     responses:
- *       200:
- *         description: Correo electrónico disponible
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'El correo electrónico está disponible'
- *       409:
- *         description: Correo electrónico ya existe
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'El correo electrónico ya está registrado'
- *       500:
- *         description: Error en el servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Error al procesar la solicitud'
- */
-router.get('/check-email', authController.checkEmail);
-
 
 module.exports = router;

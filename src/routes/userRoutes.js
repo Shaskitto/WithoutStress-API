@@ -13,139 +13,6 @@ const userController = require('../controllers/userController');
 
 /**
  * @swagger
- * /user/upload:
- *   post:
- *     summary: Subir una imagen de perfil
- *     tags: [User]
- *     security: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               profileImage:
- *                 type: string
- *                 format: binary
- *                 description: Imagen de perfil del usuario
- *     responses:
- *       201:
- *         description: Imagen de perfil subida exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Imagen de perfil subida con éxito.'
- *       400:
- *         description: Petición incorrecta (datos inválidos)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Datos inválidos, por favor verifica los campos.'
- *       500:
- *         description: Error en el servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Error al procesar la solicitud.'
- */
-router.post('/upload', upload.single('profileImage'), userController.uploadImage);
-
-/**
- * @swagger
- * /user/estado-de-animo/{userId}:
- *   post:
- *     summary: Registrar estado de ánimo del usuario
- *     tags: [User]
- *     security:
- *       - bearerAuth: []  
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID del usuario que registra su estado de ánimo.
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               estado:
- *                 type: string
- *                 enum: ["Muy bien", "Bien", "Neutro", "Mal", "Muy mal"]
- *                 description: Estado de ánimo del usuario.
- *                 example: "Bien"
- *     responses:
- *       200:
- *         description: Estado de ánimo registrado exitosamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Estado de ánimo registrado con éxito."
- *                 estadoDeAnimo:
- *                   type: object
- *                   properties:
- *                     estado:
- *                       type: string
- *                       example: "Bien"
- *                     fecha:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-03-18T14:30:00.000Z"
- *       400:
- *         description: Petición incorrecta (estado de ánimo inválido).
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "El estado de ánimo proporcionado no es válido."
- *       404:
- *         description: Usuario no encontrado.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Usuario no encontrado."
- *       500:
- *         description: Error en el servidor.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Error al procesar la solicitud."
- */
-router.post('/estado-de-animo/:id', verifyToken, userController.mood)
-
-/**
- * @swagger
  * /user:
  *   get:
  *     summary: Obtener todos los usuarios
@@ -313,6 +180,234 @@ router.get('/notes/:id', verifyToken, userController.getNotes);
 
 /**
  * @swagger
+ * /user/upload:
+ *   post:
+ *     summary: Subir una imagen de perfil
+ *     tags: [User]
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               profileImage:
+ *                 type: string
+ *                 format: binary
+ *                 description: Imagen de perfil del usuario
+ *     responses:
+ *       201:
+ *         description: Imagen de perfil subida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Imagen de perfil subida con éxito.'
+ *       400:
+ *         description: Petición incorrecta (datos inválidos)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Datos inválidos, por favor verifica los campos.'
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Error al procesar la solicitud.'
+ */
+router.post('/upload', upload.single('profileImage'), userController.uploadImage);
+
+/**
+ * @swagger
+ * /user/estado-de-animo/{userId}:
+ *   post:
+ *     summary: Registrar estado de ánimo del usuario
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []  
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID del usuario que registra su estado de ánimo.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               estado:
+ *                 type: string
+ *                 enum: ["Muy bien", "Bien", "Neutro", "Mal", "Muy mal"]
+ *                 description: Estado de ánimo del usuario.
+ *                 example: "Bien"
+ *     responses:
+ *       200:
+ *         description: Estado de ánimo registrado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Estado de ánimo registrado con éxito."
+ *                 estadoDeAnimo:
+ *                   type: object
+ *                   properties:
+ *                     estado:
+ *                       type: string
+ *                       example: "Bien"
+ *                     fecha:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-03-18T14:30:00.000Z"
+ *       400:
+ *         description: Petición incorrecta (estado de ánimo inválido).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "El estado de ánimo proporcionado no es válido."
+ *       404:
+ *         description: Usuario no encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario no encontrado."
+ *       500:
+ *         description: Error en el servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error al procesar la solicitud."
+ */
+router.post('/estado-de-animo/:id', verifyToken, userController.mood)
+
+/**
+ * @swagger
+ * /user/notes/{userId}:
+ *   post:
+ *     summary: Agregar una nota personal a un usuario
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID del usuario al que se le agregará la nota
+ *         schema:
+ *           type: string
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               titulo:
+ *                 type: string
+ *                 description: Título de la nota.
+ *               contenido:
+ *                 type: string
+ *                 description: Contenido de la nota.
+ *               fecha:
+ *                 type: string
+ *                 format: date
+ *                 description: Fecha de la nota en formato YYYY-MM-DD.
+ *               hora:
+ *                 type: string
+ *                 description: Hora de la nota en formato HH:mm.
+ *     responses:
+ *       201:
+ *         description: Nota agregada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Nota agregada correctamente"
+ *                 nota:
+ *                   type: object
+ *                   properties:
+ *                     titulo:
+ *                       type: string
+ *                       example: "Revisión del proyecto"
+ *                     contenido:
+ *                       type: string
+ *                       example: "Revisión del proyecto final"
+ *                     fecha:
+ *                       type: string
+ *                       format: date
+ *                       example: "2025-04-10"
+ *                     hora:
+ *                       type: string
+ *                       example: "14:30"
+ *       400:
+ *         description: Petición incorrecta (datos inválidos)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "El título, contenido, fecha y hora son obligatorios"
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario no encontrado"
+ *       500:
+ *         description: Error en el servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Error al procesar la solicitud"
+ */
+router.post('/notes/:id', verifyToken, userController.createNotes);
+
+/**
+ * @swagger
  * /user/{userId}:
  *   patch:
  *     summary: Actualizar un usuario por ID
@@ -439,101 +534,6 @@ router.get('/notes/:id', verifyToken, userController.getNotes);
  *                   example: 'Error al procesar la solicitud'
  */
 router.patch('/:id', verifyToken, upload.single('profileImage'), userController.updateUserById);
-
-/**
- * @swagger
- * /user/notes/{userId}:
- *   post:
- *     summary: Agregar una nota personal a un usuario
- *     tags: [User]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         description: ID del usuario al que se le agregará la nota
- *         schema:
- *           type: string
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *                 description: Título de la nota.
- *               contenido:
- *                 type: string
- *                 description: Contenido de la nota.
- *               fecha:
- *                 type: string
- *                 format: date
- *                 description: Fecha de la nota en formato YYYY-MM-DD.
- *               hora:
- *                 type: string
- *                 description: Hora de la nota en formato HH:mm.
- *     responses:
- *       201:
- *         description: Nota agregada exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Nota agregada correctamente"
- *                 nota:
- *                   type: object
- *                   properties:
- *                     titulo:
- *                       type: string
- *                       example: "Revisión del proyecto"
- *                     contenido:
- *                       type: string
- *                       example: "Revisión del proyecto final"
- *                     fecha:
- *                       type: string
- *                       format: date
- *                       example: "2025-04-10"
- *                     hora:
- *                       type: string
- *                       example: "14:30"
- *       400:
- *         description: Petición incorrecta (datos inválidos)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "El título, contenido, fecha y hora son obligatorios"
- *       404:
- *         description: Usuario no encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Usuario no encontrado"
- *       500:
- *         description: Error en el servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Error al procesar la solicitud"
- */
-router.post('/notes/:id', verifyToken, userController.createNotes);
 
 /**
  * @swagger
