@@ -88,8 +88,8 @@ exports.createNotes = async (req, res) => {
             titulo, 
             contenido, 
             fecha, 
-            horaInicio: allDay ? null : horaInicio, 
-            horaFin: allDay ? null : horaFin, 
+            horaInicio: allDay ? "06:00:00" : horaInicio, 
+            horaFin: allDay ? "23:00:00" : horaFin, 
             allDay: allDay || false 
         };
 
