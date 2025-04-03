@@ -134,26 +134,32 @@ const userSchema = mongoose.Schema({
     },
     notasPersonales: [
         {
-            fecha: { 
-                type: Date, 
-                required: true }, 
-
-            contenido: { 
-                type: String, 
-                required: true, 
-                trim: true 
-            },
-
             titulo: {
                 type: String, 
                 required: true, 
                 trim: true 
             },
-
-            hora: { 
+            contenido: { 
                 type: String, 
                 required: true, 
                 trim: true 
+            },
+            fecha: { 
+                type: Date, 
+                required: true 
+            }, 
+            horaInicio: {
+                type: String, 
+                required: true, 
+                trim: true 
+            },
+            horaFin: {  
+                type: String,
+                trim: true
+            },
+            allDay: {  
+                type: Boolean,
+                default: false
             }           
         }
     ],

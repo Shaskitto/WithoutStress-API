@@ -71,7 +71,7 @@ exports.updateUserById = async (req, res) => {
 // Crear notas de un usuario
 exports.createNotes = async (req, res) => {
     const { id } = req.params;
-    const { titulo, contenido, fecha, hora } = req.body;
+    const { titulo, contenido, fecha, horaInicio, horaFin, allDay } = req.body;
 
     try {
         const user = await userSchema.findById(id);
@@ -80,13 +80,20 @@ exports.createNotes = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        if (!titulo || !contenido || !fecha || !hora) {
-            return res.status(400).json({ message: 'El título, el contenido, la fecha y la hora son obligatorios.' });
+        if (!titulo || !contenido || !fecha || (!allDay && !horaInicio)) {
+            return res.status(400).json({ message: 'El título, contenido, fecha y horaInicio (si no es allDay) son obligatorios.' });
         }
 
-        const nuevaNota = { titulo, contenido, fecha, hora };
-        user.notasPersonales.push(nuevaNota);
+        const nuevaNota = { 
+            titulo, 
+            contenido, 
+            fecha, 
+            horaInicio: allDay ? null : horaInicio, 
+            horaFin: allDay ? null : horaFin, 
+            allDay: allDay || false 
+        };
 
+        user.notasPersonales.push(nuevaNota);
         await user.save();
 
         res.status(201).json({ message: 'Nota agregada correctamente.', nota: nuevaNota });
@@ -99,7 +106,7 @@ exports.createNotes = async (req, res) => {
 exports.updateNotes = async (req, res) => {
     try {
         const { id, noteId } = req.params;
-        const { titulo, contenido, fecha, hora } = req.body;
+        const { titulo, contenido, fecha, horaInicio, horaFin, allDay } = req.body;
 
         const user = await userSchema.findById(id);
         if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
@@ -110,17 +117,19 @@ exports.updateNotes = async (req, res) => {
         if (titulo) note.titulo = titulo;
         if (contenido) note.contenido = contenido;
         if (fecha) note.fecha = fecha;
-        if (hora) note.hora = hora;
+        if (allDay !== undefined) note.allDay = allDay;
+        if (!allDay && horaInicio) note.horaInicio = horaInicio;
+        if (!allDay && horaFin !== undefined) note.horaFin = horaFin;
+        if (allDay) {
+            note.horaInicio = null;
+            note.horaFin = null;
+        }
 
         await user.save();
-
-        res.status(200).json({
-        message: "Nota actualizada correctamente",
-        nota: note
-        });
+        res.status(200).json({ message: "Nota actualizada correctamente", nota: note });
 
     } catch (error) {
-        res.status(500).json({ message: "Error al procesar la solicitud" });
+        res.status(500).json({ message: "Error al actualizar la nota", error: error.message });
     }
 };
   
@@ -144,8 +153,8 @@ exports.deleteNotes = async (req, res) => {
         if (user.notasPersonales.length === initialLength) {
             return res.status(404).json({ message: "Nota no encontrada" });
         }
-        await user.save();
 
+        await user.save();
         res.status(200).json({ message: "Nota eliminada correctamente" });
 
     } catch (error) {

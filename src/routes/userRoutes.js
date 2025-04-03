@@ -343,9 +343,15 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *                 type: string
  *                 format: date
  *                 description: Fecha de la nota en formato YYYY-MM-DD.
- *               hora:
+ *               horaInicio:
  *                 type: string
- *                 description: Hora de la nota en formato HH:mm.
+ *                 description: Hora de inicio en formato HH:mm (opcional si allDay es true).
+ *               horaFin:
+ *                 type: string
+ *                 description: Hora de finalización en formato HH:mm (opcional si allDay es true).
+ *               allDay:
+ *                 type: boolean
+ *                 description: Indica si la nota es de todo el día.
  *     responses:
  *       201:
  *         description: Nota agregada exitosamente
@@ -370,9 +376,15 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *                       type: string
  *                       format: date
  *                       example: "2025-04-10"
- *                     hora:
+ *                     horaInicio:
  *                       type: string
  *                       example: "14:30"
+ *                     horaFin:
+ *                       type: string
+ *                       example: "15:30"
+ *                     allDay:
+ *                       type: boolean
+ *                       example: false
  *       400:
  *         description: Petición incorrecta (datos inválidos)
  *         content:
@@ -382,7 +394,7 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "El título, contenido, fecha y hora son obligatorios"
+ *                   example: "El título, contenido y fecha son obligatorios"
  *       404:
  *         description: Usuario no encontrado
  *         content:
@@ -405,6 +417,7 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *                   example: "Error al procesar la solicitud"
  */
 router.post('/notes/:id', verifyToken, userController.createNotes);
+
 
 /**
  * @swagger
@@ -573,9 +586,15 @@ router.patch('/:id', verifyToken, upload.single('profileImage'), userController.
  *                 type: string
  *                 format: date
  *                 description: Nueva fecha de la nota en formato YYYY-MM-DD.
- *               hora:
+ *               horaInicio:
  *                 type: string
- *                 description: Nueva hora de la nota en formato HH:mm.
+ *                 description: Nueva hora de inicio en formato HH:mm (opcional si allDay es true).
+ *               horaFin:
+ *                 type: string
+ *                 description: Nueva hora de finalización en formato HH:mm (opcional si allDay es true).
+ *               allDay:
+ *                 type: boolean
+ *                 description: Indica si la nota es de todo el día.
  *     responses:
  *       200:
  *         description: Nota actualizada exitosamente
@@ -596,8 +615,13 @@ router.patch('/:id', verifyToken, upload.single('profileImage'), userController.
  *                       type: string
  *                     fecha:
  *                       type: string
- *                     hora:
+ *                       format: date
+ *                     horaInicio:
  *                       type: string
+ *                     horaFin:
+ *                       type: string
+ *                     allDay:
+ *                       type: boolean
  *       400:
  *         description: Petición incorrecta (datos inválidos)
  *       404:
@@ -606,6 +630,7 @@ router.patch('/:id', verifyToken, upload.single('profileImage'), userController.
  *         description: Error en el servidor
  */
 router.patch('/notes/:id/:noteId', verifyToken, userController.updateNotes);
+
 
 /**
  * @swagger
