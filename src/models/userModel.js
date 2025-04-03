@@ -139,11 +139,6 @@ const userSchema = mongoose.Schema({
                 required: true, 
                 trim: true 
             },
-            contenido: { 
-                type: String, 
-                required: true, 
-                trim: true 
-            },
             fecha: { 
                 type: Date, 
                 required: true 

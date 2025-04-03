@@ -71,7 +71,7 @@ exports.updateUserById = async (req, res) => {
 // Crear notas de un usuario
 exports.createNotes = async (req, res) => {
     const { id } = req.params;
-    const { titulo, contenido, fecha, horaInicio, horaFin, allDay } = req.body;
+    const { titulo, fecha, horaInicio, horaFin, allDay } = req.body;
 
     try {
         const user = await userSchema.findById(id);
@@ -80,13 +80,12 @@ exports.createNotes = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        if (!titulo || !contenido || !fecha || (!allDay && !horaInicio)) {
-            return res.status(400).json({ message: 'El título, contenido, fecha y horaInicio (si no es allDay) son obligatorios.' });
+        if (!titulo || !fecha || (!allDay && !horaInicio)) {
+            return res.status(400).json({ message: 'El título, fecha y horaInicio (si no es allDay) son obligatorios.' });
         }
 
         const nuevaNota = { 
             titulo, 
-            contenido, 
             fecha, 
             horaInicio: allDay ? "06:00:00" : horaInicio, 
             horaFin: allDay ? "23:00:00" : horaFin, 
@@ -106,7 +105,7 @@ exports.createNotes = async (req, res) => {
 exports.updateNotes = async (req, res) => {
     try {
         const { id, noteId } = req.params;
-        const { titulo, contenido, fecha, horaInicio, horaFin, allDay } = req.body;
+        const { titulo, fecha, horaInicio, horaFin, allDay } = req.body;
 
         const user = await userSchema.findById(id);
         if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
@@ -115,7 +114,6 @@ exports.updateNotes = async (req, res) => {
         if (!note) return res.status(404).json({ message: "Nota no encontrada" });
 
         if (titulo) note.titulo = titulo;
-        if (contenido) note.contenido = contenido;
         if (fecha) note.fecha = fecha;
         if (allDay !== undefined) note.allDay = allDay;
         if (!allDay && horaInicio) note.horaInicio = horaInicio;

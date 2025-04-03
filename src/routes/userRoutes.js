@@ -336,9 +336,6 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *               titulo:
  *                 type: string
  *                 description: Título de la nota.
- *               contenido:
- *                 type: string
- *                 description: Contenido de la nota.
  *               fecha:
  *                 type: string
  *                 format: date
@@ -369,9 +366,6 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *                     titulo:
  *                       type: string
  *                       example: "Revisión del proyecto"
- *                     contenido:
- *                       type: string
- *                       example: "Revisión del proyecto final"
  *                     fecha:
  *                       type: string
  *                       format: date
@@ -394,7 +388,7 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "El título, contenido y fecha son obligatorios"
+ *                   example: "El título y fecha son obligatorios"
  *       404:
  *         description: Usuario no encontrado
  *         content:
@@ -417,7 +411,6 @@ router.post('/mood/:id', verifyToken, userController.registerMood )
  *                   example: "Error al procesar la solicitud"
  */
 router.post('/notes/:id', verifyToken, userController.createNotes);
-
 
 /**
  * @swagger
@@ -579,9 +572,6 @@ router.patch('/:id', verifyToken, upload.single('profileImage'), userController.
  *               titulo:
  *                 type: string
  *                 description: Nuevo título de la nota.
- *               contenido:
- *                 type: string
- *                 description: Nuevo contenido de la nota.
  *               fecha:
  *                 type: string
  *                 format: date
@@ -611,8 +601,6 @@ router.patch('/:id', verifyToken, upload.single('profileImage'), userController.
  *                   properties:
  *                     titulo:
  *                       type: string
- *                     contenido:
- *                       type: string
  *                     fecha:
  *                       type: string
  *                       format: date
@@ -630,7 +618,6 @@ router.patch('/:id', verifyToken, upload.single('profileImage'), userController.
  *         description: Error en el servidor
  */
 router.patch('/notes/:id/:noteId', verifyToken, userController.updateNotes);
-
 
 /**
  * @swagger
