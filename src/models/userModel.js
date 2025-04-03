@@ -150,12 +150,17 @@ const userSchema = mongoose.Schema({
             }, 
             horaInicio: {
                 type: String, 
-                required: true, 
-                trim: true 
+                trim: true,
+                required: function () {
+                    return !this.allDay; 
+                }
             },
             horaFin: {  
                 type: String,
-                trim: true
+                trim: true,
+                required: function () {
+                    return !this.allDay; 
+                }
             },
             allDay: {  
                 type: Boolean,
