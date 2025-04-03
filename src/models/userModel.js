@@ -151,6 +151,7 @@ const userSchema = mongoose.Schema({
             horaInicio: {
                 type: String, 
                 trim: true,
+                default: "06:00:00",
                 required: function () {
                     return !this.allDay; 
                 }
@@ -158,6 +159,7 @@ const userSchema = mongoose.Schema({
             horaFin: {  
                 type: String,
                 trim: true,
+                default: "23:00:00",
                 required: function () {
                     return !this.allDay; 
                 }
