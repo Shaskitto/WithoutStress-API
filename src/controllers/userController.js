@@ -87,8 +87,8 @@ exports.createNotes = async (req, res) => {
         const nuevaNota = { 
             titulo, 
             fecha, 
-            horaInicio: allDay ? "06:00:00" : horaInicio, 
-            horaFin: allDay ? "23:00:00" : horaFin, 
+            horaInicio: allDay ? "00:00:00" : horaInicio, 
+            horaFin: allDay ? undefined : horaFin, 
             allDay: allDay || false 
         };
 
