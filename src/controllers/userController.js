@@ -71,7 +71,7 @@ exports.updateUserById = async (req, res) => {
 // Crear notas de un usuario
 exports.createNotes = async (req, res) => {
     const { id } = req.params;
-    const { titulo, fecha, horaInicio, horaFin, allDay } = req.body;
+    const { titulo, fechaInicio, fechaFin, horaInicio, horaFin, allDay } = req.body;
 
     try {
         const user = await userSchema.findById(id);
@@ -80,13 +80,14 @@ exports.createNotes = async (req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado.' });
         }
 
-        if (!titulo || !fecha || (!allDay && !horaInicio)) {
+        if (!titulo || !fechaInicio || !fechaFin || (!allDay && !horaInicio)) {
             return res.status(400).json({ message: 'El título, fecha y horaInicio (si no es allDay) son obligatorios.' });
         }
 
         const nuevaNota = { 
             titulo, 
-            fecha, 
+            fechaInicio, 
+            fechaFin,
             horaInicio: allDay ? undefined : horaInicio, 
             horaFin: allDay ? undefined : horaFin, 
             allDay: allDay || false 
@@ -105,7 +106,7 @@ exports.createNotes = async (req, res) => {
 exports.updateNotes = async (req, res) => {
     try {
         const { id, noteId } = req.params;
-        const { titulo, fecha, horaInicio, horaFin, allDay } = req.body;
+        const { titulo, fechaInicio, fechaFin, horaInicio, horaFin, allDay } = req.body;
 
         const user = await userSchema.findById(id);
         if (!user) return res.status(404).json({ message: "Usuario no encontrado" });
@@ -114,15 +115,18 @@ exports.updateNotes = async (req, res) => {
         if (!note) return res.status(404).json({ message: "Nota no encontrada" });
 
         if (titulo) note.titulo = titulo;
-        if (fecha) note.fecha = fecha;
+        if (fechaInicio) note.fechaInicio = fechaInicio;
+        if (fechaFin) note.fechaFin = fechaFin;
         if (allDay !== undefined) note.allDay = allDay;
-        if (!allDay && horaInicio) note.horaInicio = horaInicio;
-        if (!allDay && horaFin !== undefined) note.horaFin = horaFin;
+
         if (allDay) {
             note.horaInicio = null;
             note.horaFin = null;
+        } else {
+            if (horaInicio) note.horaInicio = horaInicio;
+            if (horaFin !== undefined) note.horaFin = horaFin;
         }
-
+        
         await user.save();
         res.status(200).json({ message: "Nota actualizada correctamente", nota: note });
 

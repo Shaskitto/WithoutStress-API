@@ -139,10 +139,14 @@ const userSchema = mongoose.Schema({
                 required: true, 
                 trim: true 
             },
-            fecha: { 
+            fechaInicio: { 
                 type: Date, 
                 required: true 
             }, 
+            fechaFin: {
+                type: Date,
+                required: true
+            },
             horaInicio: {
                 type: String, 
                 trim: true,
