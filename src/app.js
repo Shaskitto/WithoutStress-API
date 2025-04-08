@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http'); 
+const { Server } = require('socket.io');
 const cors = require('cors');
 const cron = require('node-cron');
 const axios = require('axios');
@@ -9,11 +11,24 @@ const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const initSocket = require('./config/socket');
 const { connectDB, initGFS } = require('./config/db');
 
 require('dotenv').config();
 
 const app = express();
+const server = http.createServer(app); 
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+})
+
+// Iniciar Socket.IO
+initSocket(io);
+
 const port = process.env.PORT || 10000;
 
 // Definición de las opciones de Swagger
@@ -77,10 +92,12 @@ app.use(express.json());
 // Servir la documentación de Swagger
 app.use('/api-docs', basicAuth(authOptions), swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Rutas de la API
 app.use('/user', userRoutes);    
 app.use('/auth', authRoutes);
-app.use('/friend', friendRoutes)
-app.use('/resource', resourceRoutes)
+app.use('/friend', friendRoutes);
+app.use('/resource', resourceRoutes);
+app.use('/chat', chatRoutes)
 app.use('/uploads', express.static('uploads'));
 
 // Ruta principal
@@ -109,4 +126,4 @@ connectDB().then(() => {
 });
 
 // Iniciar el servidor
-app.listen(port, () => console.log('server listening on port', port));
+server.listen(port, () => console.log('server listening on port', port));
