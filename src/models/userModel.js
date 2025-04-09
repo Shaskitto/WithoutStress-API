@@ -22,6 +22,11 @@ const userSchema = mongoose.Schema({
         required: true,
         minlength: 8, 
     },
+    rol:{
+        type: String,
+        enum: ['Estudiante', 'Psicologo'],
+        default: 'Estudiante', 
+    },
     profileImage: {
         type: String,
         default: 'a4dca901ab52c4a6818e250dc6bc7e14.jfif', 
