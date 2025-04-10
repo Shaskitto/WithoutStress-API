@@ -222,7 +222,7 @@ router.get("/:id/contenido", verifyToken, resourceController.getContent);
  *                 description: Contenido del recurso a crear (archivo o datos)
  *               categoria:
  *                 type: string
- *                 enum: ['Aprender', 'Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir', 'Musica']
+ *                 enum: ['Aprender', 'Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir', 'Musica', 'Podcast']
  *                 description: Categoría del recurso
  *               titulo:
  *                 type: string
