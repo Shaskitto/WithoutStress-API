@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
         minlength: 8, 
     },
     nombre_completo:{
-          tyoe: String,
+          type: String,
           trim: true,
     },
     rol:{
