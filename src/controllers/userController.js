@@ -227,15 +227,18 @@ exports.registerMood = async (req, res)  => {
             return res.status(404).json({ error: 'Usuario no encontrado' });
         }
 
-        // Obtener la fecha actual en formato UTC sin horas, minutos ni segundos
-        const today = new Date();
-        today.setUTCHours(0, 0, 0, 0);
+        // Fecha actual en Colombia (UTC-5) a medianoche
+        const now = new Date();
+        const colombiaOffset = -5 * 60; // en minutos
+        const colombiaMidnight = new Date(now.getTime() + (colombiaOffset - now.getTimezoneOffset()) * 60000);
+        colombiaMidnight.setHours(0, 0, 0, 0);
 
         // Verificar si ya registró su estado de ánimo hoy
         const alreadyRegistered = user.estadoDeAnimo.some(entry => {
             const entryDate = new Date(entry.fecha);
-            entryDate.setUTCHours(0, 0, 0, 0);
-            return entryDate.getTime() === today.getTime();
+            const entryInColombia = new Date(entryDate.getTime() + (colombiaOffset - entryDate.getTimezoneOffset()) * 60000);
+            entryInColombia.setUTCHours(0, 0, 0, 0);
+            return entryInColombia.getTime() === colombiaMidnight.getTime();
         });
 
         if (alreadyRegistered) {
@@ -243,7 +246,7 @@ exports.registerMood = async (req, res)  => {
         }
 
         // Registrar el nuevo estado de ánimo
-        user.estadoDeAnimo.push({ fecha: new Date(), estado });
+        user.estadoDeAnimo.push({ fecha: colombiaMidnight, estado });
         await user.save();
 
         res.status(200).json({ message: 'Estado de ánimo registrado con éxito' });
