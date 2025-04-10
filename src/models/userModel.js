@@ -22,6 +22,10 @@ const userSchema = mongoose.Schema({
         required: true,
         minlength: 8, 
     },
+    nombre_completo:{
+          tyoe: String,
+          trim: true,
+    },
     rol:{
         type: String,
         enum: ['Estudiante', 'Psicologo'],
