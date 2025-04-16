@@ -15,7 +15,7 @@ const resourceSchema = mongoose.Schema({
         default: 'Without Stress Team'
     },
     duracion: {
-        type: Number, 
+        type: String, 
         required: true
     },
     descripcion:{
