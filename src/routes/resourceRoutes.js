@@ -189,7 +189,7 @@ router.get("/:id", verifyToken, resourceController.getResourceById);
  *                 example: '4j6Ej2Ny6wo'
  *               autor:
  *                 type: string
- *                 description: Autor del recurso (opcional, default: Without Stress Team)
+ *                 description: "Autor del recurso (opcional, default: Without Stress Team)"
  *                 example: 'Equipo de Bienestar'
  *     responses:
  *       201:
