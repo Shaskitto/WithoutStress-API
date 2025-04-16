@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const resourceSchema = mongoose.Schema({
     categoria: {
         type: String,
-        enum: ['Aprender', 'Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir', 'Música', 'Podcast'], 
+        enum: ['Aprender', 'Meditación y Mindfulness', 'Música y Sonidos Relajantes', 'Prácticas para Dormir', 'Ejercicios de Respiración', 'Podcast'], 
         required: true
     },
     titulo: {
@@ -22,9 +22,14 @@ const resourceSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    contenido: { 
-        type: String, 
-        required: true 
+    mediaType: {
+        type: String,
+        enum: ['youtube', 'pdf'],
+        required: true
+    },
+    contenidoUrl: {
+        type: String,
+        required: true
     }
 });
 

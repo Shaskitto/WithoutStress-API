@@ -142,68 +142,6 @@ router.get("/:id", verifyToken, resourceController.getResourceById);
 
 /**
  * @swagger
- * /resource/{ResourceId}/contenido:
- *   get:
- *     summary: Obtener el contenido de un recurso por ID
- *     tags: [Resource]
- *     parameters:
- *       - in: path
- *         name: ResourceId
- *         required: true
- *         description: ID del recurso a obtener
- *         schema:
- *           type: string
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Contenido del recurso obtenido exitosamente
- *         content:
- *           application/pdf:
- *             schema:
- *               type: string
- *               format: binary
- *               description: Contenido del recurso en formato PDF
- *           audio/mpeg:
- *             schema:
- *               type: string
- *               format: binary
- *               description: Contenido del recurso en formato de audio
- *       400:
- *         description: Petición incorrecta (ID inválido)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'ID del recurso inválido'
- *       404:
- *         description: Recurso no encontrado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Recurso no encontrado'
- *       500:
- *         description: Error en el servidor
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Error al procesar la solicitud'
- */
-router.get("/:id/contenido", verifyToken, resourceController.getContent);
-
-/**
- * @swagger
  * /resource/create:
  *   post:
  *     summary: Crear un nuevo recurso
@@ -212,41 +150,54 @@ router.get("/:id/contenido", verifyToken, resourceController.getContent);
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - categoria
+ *               - titulo
+ *               - duracion
+ *               - descripcion
+ *               - mediaType
+ *               - contenidoUrl
  *             properties:
- *               contenido:
- *                 type: string
- *                 format: binary
- *                 description: Contenido del recurso a crear (archivo o datos)
  *               categoria:
  *                 type: string
- *                 enum: ['Aprender', 'Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir', 'Musica', 'Podcast']
+ *                 enum: ['Aprender', 'Meditación y Mindfulness', 'Música y Sonidos Relajantes', 'Prácticas para Dormir', 'Ejercicios de Respiración', 'Podcast']
  *                 description: Categoría del recurso
+ *                 example: 'Meditación y Mindfulness'
  *               titulo:
  *                 type: string
  *                 description: Título del recurso
+ *                 example: 'Meditación guiada para principiantes'
  *               duracion:
- *                 type: string
- *                 description: Duración del recurso
+ *                 type: number
+ *                 description: Duración en minutos
+ *                 example: 15
  *               descripcion:
  *                 type: string
  *                 description: Descripción del recurso
+ *                 example: 'Una sesión de meditación guiada para ayudar a reducir el estrés'
+ *               mediaType:
+ *                 type: string
+ *                 enum: ['youtube', 'pdf']
+ *                 description: Tipo de contenido multimedia
+ *                 example: 'youtube'
+ *               contenidoUrl:
+ *                 type: string
+ *                 description: ID de YouTube o enlace a PDF
+ *                 example: '4j6Ej2Ny6wo'
+ *               autor:
+ *                 type: string
+ *                 description: Autor del recurso (opcional, default: Without Stress Team)
+ *                 example: 'Equipo de Bienestar'
  *     responses:
  *       201:
  *         description: Recurso creado exitosamente
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   description: ID del recurso creado
- *                 message:
- *                   type: string
- *                   example: 'Recurso creado exitosamente'
+ *               $ref: '#/components/schemas/Resource'
  *       400:
  *         description: Petición incorrecta (datos inválidos)
  *         content:
@@ -254,7 +205,7 @@ router.get("/:id/contenido", verifyToken, resourceController.getContent);
  *             schema:
  *               type: object
  *               properties:
- *                 message:
+ *                 error:
  *                   type: string
  *                   example: 'Datos inválidos, por favor verifica los campos'
  *       500:
@@ -268,6 +219,6 @@ router.get("/:id/contenido", verifyToken, resourceController.getContent);
  *                   type: string
  *                   example: 'Error al procesar la solicitud'
  */
-router.post("/create", upload.single("contenido"), resourceController.createResource);
+router.post("/create", resourceController.createResource);
 
 module.exports = router;
