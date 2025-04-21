@@ -360,4 +360,39 @@ router.post('/forgot-password', authController.forgotPassword);
  */
 router.post('/forgot-password/reset', authController.resetPassword);
 
+/**
+ * @swagger
+ * /api/phrase:
+ *   get:
+ *     summary: Obtiene la frase del día
+ *     tags: [Motivation]
+ *     responses:
+ *       200:
+ *         description: Frase del día obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 phrase:
+ *                   type: string
+ *                   description: La frase motivacional del día
+ *                   example: 'La vida es lo que pasa mientras estás ocupado haciendo otros planes.'
+ *                 author:
+ *                   type: string
+ *                   description: El autor de la frase
+ *                   example: 'John Lennon'
+ *       500:
+ *         description: Error al obtener la frase
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 'Error al obtener la frase'
+ */
+router.get('/api/phrase', authController.getPhrase);
+
 module.exports = router;

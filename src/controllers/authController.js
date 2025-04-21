@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userSchema = require('../models/userModel');
 const emailMiddleware = require('../middlewares/emailMiddleware');
+const axios = require('axios');  
 
 // Registrar usuario
 exports.registerUser = async (req, res) => {
@@ -174,5 +175,16 @@ exports.checkEmail = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).json({ message: 'Error verificando Email' });
+    }
+};
+
+// Obtener frase del día
+exports.getPhrase = async (req, res) => {
+    try {
+        const response = await axios.get('https://frasedeldia.azurewebsites.net/api/phrase');
+        res.json(response.data);  
+    } catch (error) {
+        console.error('Error al obtener la frase:', error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Error al obtener la frase', details: error.response ? error.response.data : error.message });
     }
 };
