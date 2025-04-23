@@ -14,7 +14,6 @@ exports.generarPlan = async (req, res) => {
         let estado;
         if (estadoDeAnimo) {
             estado = estadoDeAnimo;
-            user.estadoDeAnimo.push({ estado, fecha: new Date() });
         } else if (user.estadoDeAnimo.length > 0) {
             estado = user.estadoDeAnimo[user.estadoDeAnimo.length - 1].estado;
         } else {
@@ -57,17 +56,11 @@ exports.generarPlan = async (req, res) => {
         const horarioUsuario = user.horario;
         const planFinal = { Manana: [], Tarde: [], Noche: [] };
 
-        console.log('Estado de ánimo:', estado);
-        console.log('Categorías seleccionadas:', categorias);
-        console.log('Horario del usuario:', horarioUsuario);
-
         for (const franja of ['Manana', 'Tarde', 'Noche']) {
             if (horarioUsuario[franja.toLowerCase()] && horarioUsuario[franja.toLowerCase()].length > 0) {
-                console.log(`Buscando recursos para la franja: ${franja}`);
+                c
         
                 const categoriasFranja = categorias[franja];
-                console.log('Categorías para la franja:', categoriasFranja);
-        
                 const cantidadRecursos = horarioUsuario[franja.toLowerCase()].length;  
         
                 const recursos = await resourceSchema.aggregate([
@@ -75,12 +68,8 @@ exports.generarPlan = async (req, res) => {
                     { $sample: { size: cantidadRecursos } } 
                 ]);
         
-                console.log(`Recursos encontrados para la franja ${franja}:`, recursos);
-        
                 planFinal[franja] = recursos;
-            } else {
-                console.log(`No hay horario definido para la franja ${franja}`);
-            }
+            } 
         }
 
         const planGenerado = {
@@ -97,7 +86,6 @@ exports.generarPlan = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error al generar el plan:', error);
         res.status(500).json({ message: 'Error al actualizar el estado de ánimo y generar el plan', error });
     }
 };
