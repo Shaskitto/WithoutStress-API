@@ -1,89 +1,107 @@
 const userSchema = require('../models/userModel');
+const resourceSchema = require('../models/resourceModel');
 
 // Generar el plan
 exports.generarPlan = async (req, res) => {
     try {
         const { estadoDeAnimo } = req.body;
-
         const user = await userSchema.findById(req.userId);
+
         if (!user) {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
-        // Obtener el estado actual (desde el body o el último guardado en el usuario)
         let estado;
-
         if (estadoDeAnimo) {
-            // Si se envía un nuevo estado, lo usamos
             estado = estadoDeAnimo;
-            // También lo agregamos al historial del usuario
-            user.estadoDeAnimo.push({
-                estado,
-                fecha: new Date()
-            });
+            user.estadoDeAnimo.push({ estado, fecha: new Date() });
         } else if (user.estadoDeAnimo.length > 0) {
-            // Si no se envía, usamos el último guardado
             estado = user.estadoDeAnimo[user.estadoDeAnimo.length - 1].estado;
         } else {
             return res.status(400).json({ message: 'No se proporcionó un estado de ánimo y el usuario no tiene uno registrado anteriormente.' });
         }
 
-        // Validamos si el estado es uno de los aceptados
         const categoriasPorEstado = {
             'Muy bien': {
-                Manana: ['Aprender', 'Ejercicios de Respiración'],
-                Tarde: ['Meditación y Mindfulness', 'Podcast'],
-                Noche: ['Música y Sonidos Relajantes', 'Meditación y Mindfulness'],
+                Manana: ['Podcast', 'Aprender'],
+                Tarde: ['Ejercicios de Respiración', 'Música y Sonidos Relajantes'],
+                Noche: ['Mindfulness', 'Meditación'],
             },
             Bien: {
-                Manana: ['Aprender', 'Podcast'],
-                Tarde: ['Meditación y Mindfulness', 'Meditación'],
-                Noche: ['Música y Sonidos Relajantes', 'Ejercicios de Respiración'],
+                Manana: ['Meditación y Mindfulness', 'Ejercicios de Respiración'],
+                Tarde: ['Aprender', 'Podcast'],
+                Noche: ['Mindfulness', 'Música y Sonidos Relajantes'],
             },
             Neutro: {
-                Manana: ['Ejercicios de Respiración', 'Aprender'],
-                Tarde: ['Podcast', 'Mindfulness'],
-                Noche: ['Música y Sonidos Relajantes', 'Meditación y Mindfulness'],
+                Manana: ['Podcast', 'Meditación'],
+                Tarde: ['Ejercicios de Respiración', 'Aprender'],
+                Noche: ['Mindfulness', 'Música y Sonidos Relajantes'],
             },
             Mal: {
-                Manana: ['Ejercicios de Respiración', 'Meditación y Mindfulness'],
-                Tarde: ['Podcast', 'Mindfulness'],
-                Noche: ['Música y Sonidos Relajantes', 'Meditación y Mindfulness'],
+                Manana: ['Meditación', 'Ejercicios de Respiración'],
+                Tarde: ['Música y Sonidos Relajantes', 'Podcast'],
+                Noche: ['Mindfulness', 'Meditación y Mindfulness'],
             },
             'Muy mal': {
-                Manana: ['Ejercicios de Respiración', 'Meditación y Mindfulness'],
-                Tarde: ['Podcast', 'Mindfulness'],
-                Noche: ['Música y Sonidos Relajantes', 'Meditación y Mindfulness'],
+                Manana: ['Mindfulness', 'Meditación'],
+                Tarde: ['Ejercicios de Respiración', 'Podcast'],
+                Noche: ['Música y Sonidos Relajantes', 'Aprender'],
             },
-        };
+        };        
 
         if (!categoriasPorEstado[estado]) {
             return res.status(400).json({ message: 'Estado de ánimo no válido' });
         }
 
+        const categorias = categoriasPorEstado[estado];
+        const horarioUsuario = user.horario;
+        const planFinal = { Manana: [], Tarde: [], Noche: [] };
+
+        console.log('Estado de ánimo:', estado);
+        console.log('Categorías seleccionadas:', categorias);
+        console.log('Horario del usuario:', horarioUsuario);
+
+        for (const franja of ['Manana', 'Tarde', 'Noche']) {
+            if (horarioUsuario[franja.toLowerCase()] && horarioUsuario[franja.toLowerCase()].length > 0) {
+                console.log(`Buscando recursos para la franja: ${franja}`);
+        
+                const categoriasFranja = categorias[franja];
+                console.log('Categorías para la franja:', categoriasFranja);
+        
+                const cantidadRecursos = horarioUsuario[franja.toLowerCase()].length;  
+        
+                const recursos = await resourceSchema.aggregate([
+                    { $match: { categoria: { $in: categoriasFranja } } },
+                    { $sample: { size: cantidadRecursos } } 
+                ]);
+        
+                console.log(`Recursos encontrados para la franja ${franja}:`, recursos);
+        
+                planFinal[franja] = recursos;
+            } else {
+                console.log(`No hay horario definido para la franja ${franja}`);
+            }
+        }
+
         const planGenerado = {
-            data: categoriasPorEstado[estado],
-            horario: {
-                Manana: categoriasPorEstado[estado].Manana,
-                Tarde: categoriasPorEstado[estado].Tarde,
-                Noche: categoriasPorEstado[estado].Noche,
-            },
+            data: planFinal,
             estadoDeAnimo: estado,
         };
 
         user.planDiario = planGenerado;
-
         await user.save();
 
         res.status(200).json({
             message: 'Estado de ánimo actualizado y plan generado exitosamente',
             planDiario: user.planDiario,
         });
+
     } catch (error) {
-        console.error(error);
+        console.error('Error al generar el plan:', error);
         res.status(500).json({ message: 'Error al actualizar el estado de ánimo y generar el plan', error });
     }
 };
+
 
 // Obtener el plan de un usuario
 exports.obtenerPlan = async (req, res) => {

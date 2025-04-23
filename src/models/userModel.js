@@ -65,20 +65,15 @@ const userSchema = mongoose.Schema({
     },
     planDiario: {
         data: {
-            Manana: [String],
-            Tarde: [String],
-            Noche: [String]
-        },
-        horario: {
-            Manana: [String],
-            Tarde: [String],
-            Noche: [String]
+          Manana: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recurso' }],
+          Tarde: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recurso' }],
+          Noche: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recurso' }]
         },
         estadoDeAnimo: {
-            type: String,
-            enum: ['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal']
+          type: String,
+          enum: ['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal']
         }
-    },
+      },
     friends: [{
         friendId: {
             type: mongoose.Schema.Types.ObjectId,

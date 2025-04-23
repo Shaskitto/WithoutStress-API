@@ -19,7 +19,7 @@ const planController = require('../controllers/planController');
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       required: false  // Se puede enviar vacío
+ *       required: false  
  *       content:
  *         application/json:
  *           schema:
