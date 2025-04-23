@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment-timezone');
 const bcrypt = require('bcryptjs');
+const { Schema } = mongoose;
 
 const userSchema = mongoose.Schema({
     username: {
@@ -61,6 +62,22 @@ const userSchema = mongoose.Schema({
     actividades: {
         type: [String],
         enum: ['Meditación', 'Sonidos Relajantes', 'Ejercicios de respiración', 'Prácticas para Dormir'], 
+    },
+    planDiario: {
+        data: {
+            Manana: [String],
+            Tarde: [String],
+            Noche: [String]
+        },
+        horario: {
+            Manana: [String],
+            Tarde: [String],
+            Noche: [String]
+        },
+        estadoDeAnimo: {
+            type: String,
+            enum: ['Muy bien', 'Bien', 'Neutro', 'Mal', 'Muy mal']
+        }
     },
     friends: [{
         friendId: {

@@ -12,6 +12,7 @@ const authRoutes = require('./routes/authRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const planRoutes = require('./routes/planRoutes');
 const initSocket = require('./config/socket');
 const { connectDB, initGFS } = require('./config/db');
 
@@ -97,7 +98,8 @@ app.use('/user', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/friend', friendRoutes);
 app.use('/resource', resourceRoutes);
-app.use('/chat', chatRoutes)
+app.use('/chat', chatRoutes);
+app.use('/plan', planRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Ruta principal
