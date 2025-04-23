@@ -25,25 +25,25 @@ exports.generarPlan = async (req, res) => {
             'Muy bien': {
                 Manana: ['Podcast', 'Aprender'],
                 Tarde: ['Ejercicios de Respiración', 'Música y Sonidos Relajantes'],
-                Noche: ['Mindfulness', 'Meditación'],
+                Noche: ['Meditación y Mindfulness'],
             },
             Bien: {
                 Manana: ['Meditación y Mindfulness', 'Ejercicios de Respiración'],
                 Tarde: ['Aprender', 'Podcast'],
-                Noche: ['Mindfulness', 'Música y Sonidos Relajantes'],
+                Noche: ['Meditación y Mindfulness', 'Música y Sonidos Relajantes'],
             },
             Neutro: {
-                Manana: ['Podcast', 'Meditación'],
+                Manana: ['Podcast', 'Meditación y Mindfulness'],
                 Tarde: ['Ejercicios de Respiración', 'Aprender'],
-                Noche: ['Mindfulness', 'Música y Sonidos Relajantes'],
+                Noche: ['Meditación y Mindfulness', 'Música y Sonidos Relajantes'],
             },
             Mal: {
-                Manana: ['Meditación', 'Ejercicios de Respiración'],
+                Manana: ['Meditación y Mindfulness', 'Ejercicios de Respiración'],
                 Tarde: ['Música y Sonidos Relajantes', 'Podcast'],
-                Noche: ['Mindfulness', 'Meditación y Mindfulness'],
+                Noche: ['Meditación y Mindfulness'],
             },
             'Muy mal': {
-                Manana: ['Mindfulness', 'Meditación'],
+                Manana: ['Meditación y Mindfulness'],
                 Tarde: ['Ejercicios de Respiración', 'Podcast'],
                 Noche: ['Música y Sonidos Relajantes', 'Aprender'],
             },
