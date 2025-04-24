@@ -58,8 +58,6 @@ exports.generarPlan = async (req, res) => {
 
         for (const franja of ['Manana', 'Tarde', 'Noche']) {
             if (horarioUsuario[franja.toLowerCase()] && horarioUsuario[franja.toLowerCase()].length > 0) {
-                c
-        
                 const categoriasFranja = categorias[franja];
                 const cantidadRecursos = horarioUsuario[franja.toLowerCase()].length;  
         
