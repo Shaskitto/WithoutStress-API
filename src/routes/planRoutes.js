@@ -147,4 +147,6 @@ router.post('/generar', verifyToken, planController.generarPlan);
  */
 router.get('/:id', verifyToken, planController.obtenerPlan);
 
+router.patch('/:id/reorganizar', verifyToken, planController.reorganizarPlanPorHorario);
+
 module.exports = router;
