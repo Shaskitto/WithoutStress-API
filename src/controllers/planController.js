@@ -55,19 +55,24 @@ exports.generarPlan = async (req, res) => {
         const categorias = categoriasPorEstado[estado];
         const horarioUsuario = user.horario;
         const planFinal = { Manana: [], Tarde: [], Noche: [] };
+        const recursosSeleccionados = new Set(); 
 
         for (const franja of ['Manana', 'Tarde', 'Noche']) {
             if (horarioUsuario[franja.toLowerCase()] && horarioUsuario[franja.toLowerCase()].length > 0) {
                 const categoriasFranja = categorias[franja];
-                const cantidadRecursos = horarioUsuario[franja.toLowerCase()].length;  
-        
-                const recursos = await resourceSchema.aggregate([
-                    { $match: { categoria: { $in: categoriasFranja } } },
-                    { $sample: { size: cantidadRecursos } } 
-                ]);
-        
-                planFinal[franja] = recursos;
-            } 
+                const cantidadRecursos = horarioUsuario[franja.toLowerCase()].length;
+
+                const posiblesRecursos = await resourceSchema.find({
+                    categoria: { $in: categoriasFranja }
+                });
+
+                const recursosDisponibles = posiblesRecursos.filter(r => !recursosSeleccionados.has(r._id.toString()));
+                const recursosBarajados = recursosDisponibles.sort(() => Math.random() - 0.5);
+                const seleccionados = recursosBarajados.slice(0, cantidadRecursos);
+
+                seleccionados.forEach(r => recursosSeleccionados.add(r._id.toString()));
+                planFinal[franja] = seleccionados;
+            }
         }
 
         const planGenerado = {
@@ -130,25 +135,32 @@ exports.reorganizarPlanPorHorario = async (req, res) => {
         };
 
         const planReorganizado = { Manana: [], Tarde: [], Noche: [] };
+        const recursosUsados = new Set();
 
-        for (const franja of ['Manana', 'Tarde', 'Noche']) {
+       for (const franja of ['Manana', 'Tarde', 'Noche']) {
             const horas = horario[franja.toLowerCase()] || [];
             const actividadesAnteriores = plan[franja] || [];
             const cantidadActual = horas.length;
 
             if (cantidadActual === 0) {
-                continue; 
+                continue;
             }
 
             const nuevasActividades = actividadesAnteriores.slice(0, cantidadActual);
+            nuevasActividades.forEach(act => recursosUsados.add(act._id.toString())); 
+
             const faltan = cantidadActual - nuevasActividades.length;
 
             if (faltan > 0) {
-                const nuevas = await resourceSchema.aggregate([
-                    { $match: { categoria: { $in: categoriasPorEstado[estado][franja] } } },
-                    { $sample: { size: faltan } }
-                ]);
-                nuevasActividades.push(...nuevas);
+                const posiblesRecursos = await resourceSchema.find({
+                    categoria: { $in: categoriasPorEstado[estado][franja] }
+                });
+
+                const disponibles = posiblesRecursos.filter(r => !recursosUsados.has(r._id.toString()));
+                const barajados = disponibles.sort(() => Math.random() - 0.5).slice(0, faltan);
+
+                barajados.forEach(r => recursosUsados.add(r._id.toString()));
+                nuevasActividades.push(...barajados);
             }
 
             planReorganizado[franja] = nuevasActividades;
