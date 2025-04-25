@@ -147,6 +147,63 @@ router.post('/generar', verifyToken, planController.generarPlan);
  */
 router.get('/:id', verifyToken, planController.obtenerPlan);
 
+/**
+ * @swagger
+ * /plan/{userId}/reorganizar:
+ *   patch:
+ *     summary: Reorganizar el plan de un usuario basado en cambios de horario
+ *     tags: [Plan]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         description: ID del usuario cuyo plan se va a reorganizar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Plan reorganizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Plan reorganizado con éxito'
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Usuario no encontrado'
+ *       401:
+ *         description: No autorizado, token JWT inválido o ausente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'No autorizado, por favor inicie sesión'
+ *       500:
+ *         description: Error en el servidor al reorganizar el plan
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 'Error al reorganizar el plan del usuario'
+ */
 router.patch('/:id/reorganizar', verifyToken, planController.reorganizarPlanPorHorario);
 
 module.exports = router;
