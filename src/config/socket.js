@@ -12,6 +12,7 @@ function initSocket(io) {
     socket.on('send-message', async ({ roomId, sender, receiver, content }) => {
       try {
         const user = await User.findById(sender);
+        const receiverUser = await User.findById(receiver);
         if (!user) {
           return socket.emit('error-message', 'Usuario remitente no encontrado.');
         }
