@@ -27,9 +27,6 @@ const io = new Server(server, {
   }
 })
 
-// Iniciar Socket.IO
-initSocket(io);
-
 const port = process.env.PORT || 10000;
 
 // Definición de las opciones de Swagger
@@ -123,9 +120,24 @@ cron.schedule('*/14 * * * *', () => {
 connectDB().then(() => {
     initGFS(); 
     console.log('MongoDB connected and GridFS initialized');
+
+    // Inicializar Socket.io después de conectar a DB
+    initSocket(io);
+    
+    // Manejo de errores de conexión Socket.io
+    io.on('error', (error) => {
+        console.error('Socket.IO error:', error);
+    });
+
+    // Iniciar el servidor
+    server.listen(port, () => {
+        console.log('Server listening on port', port);
+        console.log(`Socket.IO running on port ${port}`);
+    });
 }).catch(err => {
     console.error('Failed to connect to MongoDB:', err);
+    process.exit(1);
 });
 
 // Iniciar el servidor
-server.listen(port, () => console.log('server listening on port', port));
+//server.listen(port, () => console.log('server listening on port', port));
