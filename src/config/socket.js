@@ -16,17 +16,13 @@ function initSocket(io) {
           return socket.emit('error-message', 'Usuario remitente no encontrado.');
         }
 
-        const receiverUser = await User.findById(receiver);
+        const isFriend = user.friends.some(
+          (f) => f.friendId.toString() === receiver && f.status === 'accepted'
+        );
+        
+        const isPsychologist = receiverUser.rol === 'Psicologo';
 
-        const isFriendOrPsychologist =
-          user.friends.some((f) => f.friendId.toString() === receiver && f.status === 'accepted') ||
-          receiverUser.rol === 'psicologo';
-
-        if (!isFriendOrPsychologist) {
-          return socket.emit('error-message', 'No puedes chatear con este usuario');
-        }
-
-        if (!isFriend) {
+        if (!isFriend && !isPsychologist) {
           return socket.emit('error-message', 'No puedes chatear con este usuario');
         }
 
