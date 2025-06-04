@@ -7,7 +7,7 @@ exports.analizarTexto = async (req, res) => {
   }
 
   try {
-    const respuesta = await geminiService.analizarDiario(texto);
+    const respuesta = await openRouter.analizarDiario(texto);
     res.json(respuesta);
   } catch (error) {
     console.error(error);
