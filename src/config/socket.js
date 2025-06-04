@@ -24,9 +24,9 @@ function initSocket(io) {
         );
         
         const senderIsPsychologist = senderUser.rol === 'Psicologo';
-        const isPsychologist = receiverUser.rol === 'Psicologo';
+        const receiverIsPsychologist = receiverUser.rol === 'Psicologo';
 
-        if (!isFriend && !isPsychologist) {
+        if (!isFriend && !senderIsPsychologist && !receiverIsPsychologist) {
           return socket.emit('error-message', 'No puedes chatear con este usuario');
         }
 
