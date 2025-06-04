@@ -10,6 +10,7 @@ const basicAuth = require('express-basic-auth');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const friendRoutes = require('./routes/friendRoutes');
+const diarioRoutes = require('./routes/diarioRoutes');
 const resourceRoutes = require('./routes/resourceRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const planRoutes = require('./routes/planRoutes');
@@ -97,6 +98,7 @@ app.use('/friend', friendRoutes);
 app.use('/resource', resourceRoutes);
 app.use('/chat', chatRoutes);
 app.use('/plan', planRoutes);
+app.use('/diario', diarioRoutes);
 app.use('/uploads', express.static('uploads'));
 
 // Ruta principal
