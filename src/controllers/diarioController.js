@@ -1,5 +1,5 @@
 const openRouter = require('../middlewares/openRouter');
-const DiarioEntry = require('../models/DiarioEntry');
+const DiarioEntry = require('../models/diarioEntry.js');
 
 exports.analizarTexto = async (req, res) => {
   const { texto, userId } = req.body; 
