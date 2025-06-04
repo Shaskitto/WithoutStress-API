@@ -12,7 +12,9 @@ function initSocket(io) {
     socket.on('send-message', async ({ roomId, sender, receiver, content }) => {
       try {
         const user = await User.findById(sender);
+        const senderUser = await User.findById(sender);
         const receiverUser = await User.findById(receiver);
+        
         if (!user) {
           return socket.emit('error-message', 'Usuario remitente no encontrado.');
         }
@@ -21,6 +23,7 @@ function initSocket(io) {
           (f) => f.friendId.toString() === receiver && f.status === 'accepted'
         );
         
+        const senderIsPsychologist = senderUser.rol === 'Psicologo';
         const isPsychologist = receiverUser.rol === 'Psicologo';
 
         if (!isFriend && !isPsychologist) {
