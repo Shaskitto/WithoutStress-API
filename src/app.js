@@ -107,15 +107,15 @@ app.get('/', (req, res) => {
 });
 
 // Mantener activa la API
-cron.schedule('*/14 * * * *', () => {
-    axios.get('https://withoutstress-api.onrender.com')
-    .then(response => {
-    console.log('Respuesta de la API:', response.data);
-    })
-    .catch(error => {
-    console.error('Error al hacer la solicitud:', error);
-    });
-}); 
+//cron.schedule('*/14 * * * *', () => {
+  //  axios.get('https://withoutstress-api.onrender.com')
+    //.then(response => {
+    //console.log('Respuesta de la API:', response.data);
+    //})
+    //.catch(error => {
+    //console.error('Error al hacer la solicitud:', error);
+    //});
+//}); 
 
 
 // Conectar a MongoDB e inicializar GridFS
